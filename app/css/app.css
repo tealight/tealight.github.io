@@ -1,31 +1,77 @@
 /* app css stylesheet */
 
 .fullWidth {
+   height: 100%;
    width: 100%;
    padding-left: 20px;
    padding-right: 20px;
    max-width: initial;
 }
 
+html, body {
+  min-height: 100%;
+}
 
-#code-editor {
-  background: #ffd;
-  height: 400px;
+div.content {
+  position: absolute;
+  top: 60px;
+  bottom: 15px;
   width: 100%;
+}
+
+.row>div {
+  height: 100%;
+}
+
+.CodeMirror {
+  position: absolute;
+  left: 15px;
+  top: 0px;
+  right: 15px;
+  bottom: 0px;
+  height: auto;
+  border: 1px solid #ccc;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  font-size: 24px;
+}
+
+#code-panel .header {
+  height: 50px;
+}
+
+#code-panel .editor-and-output {
+  position: absolute; 
+  left:0px;
+  right:0px;
+  top:50px; 
+  bottom: 0px;
+}
+
+#code-panel .editor-and-output .editor {
+  height: 75%;
+
+}
+
+#code-panel .editor-and-output .output {
+  height: 25%;
 }
 
 #code-output {
   background: #ccc;
-  height: 100px;
-  width: 100%;
-}
-
-#canvas {
-  background: #fdf;
-  width: 100%;
-  height: 500px;
-}
-
-.CodeMirror {
   height: 100%;
+  width: 100%;
+  overflow: auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+#canvas-panel canvas {
+  width: 100%;
+  height: 100%;
+  background: #ffe;
+  border: 1px solid #ccc;
+  border-radius: 10px;
 }

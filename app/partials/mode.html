@@ -1,34 +1,31 @@
 
 <div class="row fullWidth">
-	<div class="small-12 columns">
-		<h3>{{mode}} mode!</h3>	
-	</div>
-</div>
-
-<div class="row fullWidth" style="height: 100%;">
-	<div id="code-panel" class="small-6 columns">
+	<div id="code-panel" class="small-6 columns" >
 		<div class="row header">
-			<div class="small-12 columns">
-				<p>A code file</p>
-				<select ng-model="file">
-					<option ng-repeat="f in files">{{f}}</option>
+			<div class="small-4 columns">
+				<h3>{{fileInfo.name}}</h3>
+			</div> 
+			<div class="small-4 columns text-right">
+				<a class="button small radius success" ng-click="runFile()" ng-hide="running">Run</a>
+				<a class="button small radius alert" ng-click="stopCode()" ng-show="running">Stop</a>
+			</div>
+			<div class="small-4 columns">
+				<select ng-model="fileInfo" ng-change="fileChanged()" ng-options="f.name for f in files">
 				</select>
-			</div>
-		</div>
-		<div class="row editor">
+			</div> 
+		</div> 
+		<div class="row editor-and-output" >
 			<div class="small-12 columns">
-				<div id="code-editor" tealight-code-mirror tealight-code-file={{file}}></div>
-			</div>
-		</div>
-		<div class="row controls">
-			<div class="small-12 columns text-right">
-				<a class="button small radius success">Run</a>
-				<a class="button small radius alert">Stop</a>
-			</div>
-		</div>
-		<div class="row output">
-			<div class="small-12 columns">
-				<pre id="code-output"></pre>
+				<div class="row editor">
+					<div class="small-12 columns">
+						<div id="code-editor" tealight-code-mirror tealight-code-file={{file}} ></div>
+					</div>
+				</div>
+				<div class="row output">
+					<div class="small-12 columns">
+						<pre id="code-output" tealight-console lines="stdout" ></pre>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

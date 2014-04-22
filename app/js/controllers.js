@@ -32,18 +32,132 @@ angular.module('tealight.controllers', ["github"])
   }])
 
 
-  .controller('ModeController', ["$scope", "$routeParams", "$rootScope", function($scope, $routeParams, $rootScope) {
+  .controller('ModeController', ["$scope", "$routeParams", "$rootScope", "github", function($scope, $routeParams, $rootScope, github) {
   	console.log("ModeController for user:", $rootScope.userProfile);
-	$scope.mode = $routeParams.mode;
+
+    function initMode()
+    {
+        switch($scope.mode)
+        {
+            case "logo":
+                Logo.init($('#canvas')[0]);
+                break;
+        }
+    }
 
 
-	$scope.file = "one";
+  	$scope.mode = $routeParams.mode;
+    $scope.loadEditor = {};
+    $scope.loadEditor.promise = new Promise(function(resolve, reject) { 
+      $scope.loadEditor.resolve = resolve;
+    });
+    $scope.tealightSkulptModuleCache = {};
 
-	$scope.files = ["one", "two", "three"]
+    Promise.all([
 
-	//$scope.chooseFile = function(file) {
-	//	$scope.codeMirror.setValue("Contents of " + file);
-	//}
+      $scope.loadEditor.promise, 
+
+      github.listFiles(github.user.login, "tealight-files", $scope.mode).then(function(files) {
+        
+        $scope.fileInfo = files[0];
+        $scope.files = files;
+
+      }).catch(function(e) {
+        console.error("Error listing tealight files:", e);
+        throw e;
+      })
+
+    ]).then(function() {
+
+      $scope.fileChanged();
+      $scope.$apply();
+    });
+    
+    $scope.saveFile = function(message) {
+
+      if ($scope.file)
+      {
+
+          if (!message)
+              message = "Update " + $scope.file.path;
+
+          var currentContent = $scope.editor.getValue()
+          if ($scope.file.decodedContent != currentContent)
+          {
+              console.log("Content has changed. Saving", $scope.fileInfo.path, ".");
+              
+              github.commitChange($scope.file, currentContent, message).then(function(f)
+              {
+                  console.log("Got back",f,"from commit");
+                  $scope.file.sha = f.content.sha;
+                  $scope.file.decodedContent = currentContent;
+              }).catch(function(e) {
+                console.error("Error saving file:", e);
+              });
+          }
+          else
+          {
+              console.log("Not saving. Content unchanged.");
+          }
+      }
+    }
+
+    $scope.fileChanged = function() {
+      console.log("File changed:", $scope.fileInfo.name);
+
+      $scope.editor.setValue("Loading " + $scope.fileInfo.name + "...");
+
+      github.getFile(github.user.login, "tealight-files", $scope.fileInfo.path).then(function(f) {
+        console.log("Loaded", f.name);
+        $scope.editor.setValue(f.decodedContent);
+        $scope.file = f;
+      })
+
+    };
+
+    $scope.runFile = function() {
+      $scope.stopCode();
+      $scope.python_worker = new Worker("js/run_python.js");
+
+      $scope.saveFile("Running " + $scope.fileInfo.path);
+
+      $scope.stdout = [];
+      initMode();
+      $scope.python_worker.addEventListener("message", function(event)
+      {
+          switch (event.data.type)
+          {
+              case "stdout":
+                  $scope.stdout.push(event.data.message);
+                  $scope.$apply();
+                  break;
+              case "done":
+                  $scope.stdout.push("Done!");
+                  $scope.running = false;
+                  $scope.$apply();
+                  break;
+              case "eval":
+                  eval(event.data.code);
+                  break;
+              case "module_cache":
+                  $scope.tealightSkulptModuleCache = event.data.modules;
+                  break;
+
+          }
+      });
+
+      $scope.python_worker.postMessage({type: "MODULES", modules: $scope.tealightSkulptModuleCache});
+      $scope.python_worker.postMessage({type: "RUN", code: $scope.editor.getValue()});
+      $scope.running = true;
+    };
+
+    $scope.stopCode = function() {
+      if ($scope.python_worker) {
+          $scope.python_worker.terminate();
+          $scope.python_worker = null;
+      }
+      $scope.running = false;
+    }
 
   }])
 

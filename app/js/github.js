@@ -128,7 +128,11 @@ angular.module("github", ["github.application"]).service("github", ["gh_app", fu
                                    dataType: "json",
                                    type: "GET",
                                    cache: false
-                               }));
+                               })).then(function(f) {
+            if (f.content)
+                f.decodedContent = atob(f.content.replace("\n", ""));
+            return f;
+        });
     };
     
     this.getFolder = function(repoOwner, repoName, path)
@@ -191,7 +195,7 @@ angular.module("github", ["github.application"]).service("github", ["gh_app", fu
                                  data: JSON.stringify(
                                  {
                                     message: message,
-                                    content: B64.btoa(newContent), // base-64 encode
+                                    content: btoa(newContent), // base-64 encode
                                     sha: originalFile.sha,
                                     branch: this.branch
                                  })
