@@ -34,6 +34,9 @@ var $builtinmodule = function(name)
 		postMessage({type: "eval", code: "Logo.speed(" + a.v + ")"});
 	});
 
+	mod.runForever = new Sk.builtin.func(function(fn) {
+		runForever(fn);
+	})
 	
     return mod;
 }

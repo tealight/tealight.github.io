@@ -72,6 +72,37 @@ angular.module('tealight.controllers', ["github"])
       $scope.fileChanged();
       $scope.$apply();
     });
+
+    function sendEvent(event, namedArgs) {
+    	if ($scope.python_worker) {
+    		$scope.python_worker.postMessage({type:"EVENT", event: event, namedArgs: namedArgs});
+    	}    	
+    }
+
+    function mouseEvent(event, e) {
+    	var offset = $(e.target).offset();
+    	var x = e.pageX - offset.left;
+    	var y = e.pageY - offset.top;
+    	var button = ["left", "middle", "right"][e.button];
+    	sendEvent(event, {x:x, y:y, button:button});    	
+    }
+
+    $scope.canvas_mousedown = function(e) {
+    	mouseEvent("mousedown", e);
+    }
+
+    $scope.canvas_mousemove = function(e) {
+    	var offset = $(e.target).offset();
+    	var x = e.pageX - offset.left;
+    	var y = e.pageY - offset.top;
+    	sendEvent("mousemove", {x:x, y:y});    	
+    }
+
+    $scope.canvas_mouseup = function(e) {
+    	mouseEvent("mouseup", e);
+    }
+
+
     
     $scope.saveFile = function(message) {
 
@@ -128,6 +159,8 @@ angular.module('tealight.controllers', ["github"])
           switch (event.data.type)
           {
               case "stdout":
+              	  if($scope.stdout.length > 100)
+              	  	$scope.stdout = $scope.stdout.slice(1);
                   $scope.stdout.push(event.data.message);
                   $scope.$apply();
                   break;
@@ -139,6 +172,10 @@ angular.module('tealight.controllers', ["github"])
               case "eval":
                   eval(event.data.code);
                   break;
+              case "rpc":
+              	  var r = eval(event.data.code);
+              	  $scope.python_worker.postMessage({type: "RPC_RETURN", result: r, id: event.data.id});
+              	  break;
               case "module_cache":
                   $scope.tealightSkulptModuleCache = event.data.modules;
                   break;
