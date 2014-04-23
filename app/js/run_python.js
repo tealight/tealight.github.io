@@ -20,8 +20,8 @@ function onEvent(event, namedArgs) {
 		var h  = handlers[i];
 
 		var args = [];
-		for(var j in h.co_varnames) {
-			var v = namedArgs[h.co_varnames[j]] || null;
+		for(var j in h.func_code.co_varnames) {
+			var v = namedArgs[h.func_code.co_varnames[j]] || null;
 
 			if (v) {
 				switch(typeof(v)) {
@@ -40,7 +40,7 @@ function onEvent(event, namedArgs) {
 				args.push(null);
 			}
 		}
-		handlers[i].apply(null, args);
+		Sk.misceval.apply(h,undefined,undefined,undefined,args);
 	}
 }
 
@@ -123,7 +123,7 @@ self.onmessage = function(event) {
 
 			for(var n in module.$d) {
 				if (n.indexOf("handle_") === 0 && module.$d[n].func_code) {
-					registerEventHandler(n.substr(7), module.$d[n].func_code);
+					registerEventHandler(n.substr(7), module.$d[n]);
 				}
 			}
 
