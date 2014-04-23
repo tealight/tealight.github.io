@@ -6,6 +6,10 @@ var $builtinmodule = function(name)
 		var startTime = Date.now();
 		while (Date.now() < startTime + milliseconds.v) { /* spin */ }
     });
+
+	mod.runForever = new Sk.builtin.func(function(fn) {
+		runForever(fn);
+	})
 	
     return mod;
 }

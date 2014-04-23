@@ -8,7 +8,7 @@ function ev(code)
 }
 
 function runForever(fn) {
-	setInterval(fn.func_code,10);
+	setInterval(function() {Sk.misceval.callsim(fn)},10);
 }
 
 var eventHandlers = {};
