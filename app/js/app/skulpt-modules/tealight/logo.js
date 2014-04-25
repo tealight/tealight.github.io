@@ -3,6 +3,8 @@ var $builtinmodule = function(name)
     var mod = {};
 	
     mod.move = new Sk.builtin.func(function(distance) { // distance will be a Sk.builtin.nmbr
+    	if (!distance)
+    		throw Error("blah");
     	rpc("move", distance.v);
     });
 	
@@ -27,7 +29,7 @@ var $builtinmodule = function(name)
 	});
 
 	mod.color = new Sk.builtin.func(function(c) {
-		rpc("color", c.v);
+		rpc("setColor", c.v);
 	});
 	
 	mod.speed = new Sk.builtin.func(function(s) {

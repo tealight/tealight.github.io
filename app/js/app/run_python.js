@@ -1,6 +1,7 @@
 importScripts("../lib/skulpt/skulpt.js", "../lib/skulpt/skulpt-stdlib.js")
 
 tealightModules = {};
+params = {};
 
 function OutOfMovesError() { }
 
@@ -42,7 +43,12 @@ function onEvent(event, namedArgs) {
 				args.push(null);
 			}
 		}
-		Sk.misceval.apply(h,undefined,undefined,undefined,args);
+		try {
+			Sk.misceval.apply(h,undefined,undefined,undefined,args);			
+		} catch (e) {
+			console.error(e);
+			debugger;
+		}
 	}
 }
 
@@ -98,8 +104,10 @@ function output(text) {
 	postMessage({type: "stdout", message: text});	
 }
 
+registeredHandlers = false;
 function registerEventHandler(event, handler) {
 	output("[Registering " + event + " handler.]\n");
+	registeredHandlers = true;
 
 	if (!eventHandlers[event])
 		eventHandlers[event] = [];
@@ -115,11 +123,14 @@ self.onmessage = function(event) {
 			tealightModules = event.data.modules;
 			break;
 		case "RUN":
+			params = event.data.params;
+
 			Sk.configure({
 				output: output,
 				read: builtinRead,
 				syspath: ["skulpt-modules"]
 			});
+
 
 			try {
 				var module = Sk.importMainWithBody("<stdin>", false, event.data.code);
@@ -132,7 +143,7 @@ self.onmessage = function(event) {
 					if (e instanceof Error) 
 						postMessage({type: "error", message: e.message, stack: e.stack});
 					else
-						postMessage({type: "error", message: "" + e});
+						throw e;//postMessage({type: "error", message: "" + e});
 
 					return;					
 				}
@@ -155,6 +166,9 @@ self.onmessage = function(event) {
 			}
 
 			eval(module);
+
+			if(!registeredHandlers)
+				postMessage({type: "done"});
 
 			break;
 		case "EVENT":

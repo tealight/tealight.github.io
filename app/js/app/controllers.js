@@ -1,8 +1,9 @@
 'use strict';
-define(["require", "angular", "github", "app/modes/logo", "app/modes/robot"], function(require) {
+define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "app/modes/art"], function(require) {
 
   var Logo = require("app/modes/logo");
   var Robot = require("app/modes/robot");
+  var Art = require("app/modes/art");
   /* Controllers */
 
   angular.module('tealight.controllers', ["github"])
@@ -66,6 +67,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot"], fu
     	///////////////////////////////////////////////
 
       var modeObj;
+      var modeParams = {};
     	function initMode()
     	{
     		switch($scope.mode)
@@ -75,6 +77,13 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot"], fu
     			  break;
           case "robot":
             modeObj = new Robot($('#canvas')[0]);
+            break;
+          case "art":
+            modeObj = new Art($('#canvas')[0]);
+            modeParams = {
+              screenWidth: $('#canvas').width(),
+              screenHeight: $('#canvas').height(),
+            };
             break;
     		}
     	}
@@ -256,7 +265,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot"], fu
         });
 
     		$scope.python_worker.postMessage({type: "MODULES", modules: $scope.tealightSkulptModuleCache});
-    		$scope.python_worker.postMessage({type: "RUN", code: $scope.editor.getValue()});
+    		$scope.python_worker.postMessage({type: "RUN", code: $scope.editor.getValue(), params: modeParams});
     		$scope.running = true;
     	};
 

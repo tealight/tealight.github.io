@@ -24,7 +24,7 @@ define([], function() {
 		var targetX = this.x + Math.cos(Math.PI * this.angle / 180) * distance;
 		var targetY = this.y + Math.sin(Math.PI * this.angle / 180) * distance;
 		
-		this.ctx.strokeStyle = this.color;
+		this.ctx.strokeStyle = this._color;
 		
 		this.ctx.beginPath();
 		this.ctx.moveTo(Math.round(this.x)-0.5, Math.round(this.y)-0.5);
@@ -64,8 +64,8 @@ define([], function() {
 		console.log("Speed", speed);
 	};
 		
-	Logo.prototype.color = function(color) {
-		this.color = color;
+	Logo.prototype.setColor = function(c) {
+		this._color = c;
 	};
 				
 	return Logo;

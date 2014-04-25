@@ -5,7 +5,7 @@ var $builtinmodule = function(name)
     var maps = {
     	"apples": {
 
-            size: [100,100],
+            size: [30,20],
 
     		walls: [
                 [0,10],
@@ -17,7 +17,7 @@ var $builtinmodule = function(name)
                 [6,10],
             ],
 
-            limit: 400,
+            limit: 200,
 
             target: 1,
 
@@ -42,6 +42,9 @@ var $builtinmodule = function(name)
 
     function canMoveTo(map, pos) {
 
+        if (pos[0] < 0 || pos[1] < 0 || pos[0] >= map.size[0] || pos[1] >= map.size[1])
+            return false;
+
     	for (var i in map.walls) {
 	   		var w = map.walls[i];
 
@@ -52,17 +55,55 @@ var $builtinmodule = function(name)
 	   	return true;
     }
 
-    function eatFruit(state, pos) {
-
+    function fruitIndex(state, pos) {
         for (var i in state.fruit) {
             var f = state.fruit[i];
 
-            if (f[0] == pos[0] && f[1] == pos[1]) {
-                state.fruit.splice(i,1);
-                return true;
-            }
+            if (f[0] == pos[0] && f[1] == pos[1]) 
+                return i;
         }
-        return false;
+        return null;
+    }
+
+    function eatFruit(state) {
+        var index = fruitIndex(state, state.pos);
+
+        if (index)
+            state.fruit.splice(index, 1);
+
+        return index != null;
+    }
+
+    function angleToPosDelta(angle) {
+        angle = (angle+4) % 4;
+        var xDelta = 0;
+        var yDelta = 0;
+        switch(angle) {
+            case 0:
+                yDelta = -1;
+                break;
+            case 1:
+                xDelta = 1;
+                break;
+            case 2:
+                yDelta = 1;
+                break;
+            case 3:
+                xDelta = -1;
+                break;
+        }
+
+        return [xDelta, yDelta];
+    }
+
+    function getCellContent(map, state, pos) {
+        if(!canMoveTo(map, pos))
+            return "wall"; // This will include having walked off the edge of the map.
+
+        if(fruitIndex(state, pos))
+            return "fruit";
+
+        return null;
     }
 
     mod.chooseMap = new Sk.builtin.func(function(mapName) {
@@ -91,31 +132,20 @@ var $builtinmodule = function(name)
     		throw new OutOfMovesError();
 
 
-    	var newPos = null;
-    	switch(state.angle) {
-    		case 0:
-    			newPos = [state.pos[0], state.pos[1] - 1];
-    			break;
-    		case 1:
-    			newPos = [state.pos[0] + 1, state.pos[1]];
-    			break;
-    		case 2:
-    			newPos = [state.pos[0], state.pos[1] + 1];
-    			break;
-    		case 3:
-    			newPos = [state.pos[0] - 1, state.pos[1]];
-    			break;
-    	}
+        var delta = angleToPosDelta(state.angle)
+        var newPos = [state.pos[0] + delta[0], state.pos[1] + delta[1]];
 
         if (canMoveTo(map, newPos)) {
             state.pos = newPos
-            state.moves += 1;
 
-            if (eatFruit(state, newPos))
+            if (eatFruit(state))
                 state.score += 1;
 
-            rpc("updateState", state);
         }
+
+        state.moves += 1;
+
+        rpc("updateState", state);
 
 
     });
@@ -130,7 +160,56 @@ var $builtinmodule = function(name)
 
     	rpc("updateState", state);
     });
-	
+
+    mod.look = new Sk.builtin.func(function() {
+        var delta = angleToPosDelta(state.angle)
+
+        var pos = state.pos;
+        while(true) {
+            pos = [pos[0] + delta[0], pos[1] + delta[1]];
+
+            var content = getCellContent(map, state, pos);
+
+            if (content)
+                return Sk.builtin.str(content);
+        }
+
+        // Should never get here - maps should be surrounded with wall. But just in case.
+        return Sk.builtin.str("wall");
+    });
+
+    // This differs from roboc, in that it only smells fruit. No-one ever used smell(Wall) anyway.
+    mod.smell = new Sk.builtin.func(function() {
+        var count = 0;
+        for(var x = -2; x < 3; x++) {
+            for(var y = -2; y < 3; y++) {
+                if (fruitIndex(state, [state.pos[0] + x, state.pos[1] + y]))
+                    count += 1;
+            }
+        }
+        return count;
+    });
+
+    mod.touch = new Sk.builtin.func(function() {
+        var delta = angleToPosDelta(state.angle)
+        var pos = [state.pos[0] + delta[0], state.pos[1] + delta[1]];
+
+        return Sk.builtin.str(getCellContent(map, state, pos));
+    });
+
+    mod.leftSide = new Sk.builtin.func(function() {
+        var delta = angleToPosDelta(state.angle-1)
+        var pos = [state.pos[0] + delta[0], state.pos[1] + delta[1]];
+
+        return Sk.builtin.str(getCellContent(map, state, pos));
+    });
+
+    mod.rightSide = new Sk.builtin.func(function() {
+        var delta = angleToPosDelta(state.angle+1)
+        var pos = [state.pos[0] + delta[0], state.pos[1] + delta[1]];
+
+        return Sk.builtin.str(getCellContent(map, state, pos));
+    });
 
 	
     return mod;
