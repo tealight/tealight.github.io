@@ -1,14 +1,16 @@
-importScripts("skulpt/skulpt.js", "skulpt/skulpt-stdlib.js")
+importScripts("../lib/skulpt/skulpt.js", "../lib/skulpt/skulpt-stdlib.js")
 
 tealightModules = {};
+
+function OutOfMovesError() { }
 
 function ev(code)
 {
 	postMessage({type: "eval", code: code});
 }
 
-function runForever(fn) {
-	setInterval(function() {Sk.misceval.callsim(fn)},10);
+function rpc(fn) {
+	postMessage({type: "rpc", fn: fn, args: Array.prototype.slice.call(arguments, 1)});
 }
 
 var eventHandlers = {};
@@ -119,17 +121,41 @@ self.onmessage = function(event) {
 				syspath: ["skulpt-modules"]
 			});
 
-			var module = Sk.importMainWithBody("<stdin>", false, event.data.code);
+			try {
+				var module = Sk.importMainWithBody("<stdin>", false, event.data.code);
+			} catch (e) {
+				if (e instanceof OutOfMovesError) {
+					output("Run out of moves!\n");
+					postMessage({type: "done"});
+					return;
+				} else {
+					if (e instanceof Error) 
+						postMessage({type: "error", message: e.message, stack: e.stack});
+					else
+						postMessage({type: "error", message: "" + e});
+
+					return;					
+				}
+			}
 
 			for(var n in module.$d) {
 				if (n.indexOf("handle_") === 0 && module.$d[n].func_code) {
-					registerEventHandler(n.substr(7), module.$d[n]);
+					var eventName = n.substr(7);
+					registerEventHandler(eventName, module.$d[n]);
+
+					if (eventName == "frame") {
+
+						// Someone is trying to handle "frame" events, so make sure we generate them.
+
+						setInterval(function() {
+							onEvent("frame", {});
+						}, 20); // 50 FPS
+					}
 				}
 			}
 
 			eval(module);
 
-			//postMessage({type: "done"});
 			break;
 		case "EVENT":
 			onEvent(event.data.event, event.data.namedArgs);
