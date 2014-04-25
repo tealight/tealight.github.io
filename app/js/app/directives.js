@@ -1,5 +1,5 @@
 'use strict';
-define(["angular", "codemirrorPython"], function() {
+define(["angular", "app/filters", "codemirrorPython"], function() {
 
   /* Directives */
 
@@ -23,6 +23,12 @@ define(["angular", "codemirrorPython"], function() {
   			theme: "neat",
   		});
 
+      scope.editor.on("change", function() {
+        for(var i = 0; i < scope.editor.lineCount(); i++)
+          scope.editor.removeLineClass(i, "background", "tealight-line-error");
+      });
+
+
       scope.loadEditor.resolve();
 
     	}
@@ -35,14 +41,14 @@ define(["angular", "codemirrorPython"], function() {
       return { 
 
         scope: {
-          lines: "=",
+          messages: "=",
         },
 
         templateUrl: "partials/console.html",
 
         link: function(scope, element, attrs) {
 
-          scope.$watch('lines', function(newVal, oldVal, scope) {
+          scope.$watch('messages', function(newVal, oldVal, scope) {
             element.scrollTop(element[0].scrollHeight);
           }, true)
         },

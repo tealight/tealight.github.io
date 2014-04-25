@@ -75,3 +75,15 @@ div.content {
   border: 1px solid #ccc;
   border-radius: 10px;
 }
+
+.console-message-INFO {
+
+}
+
+.console-message-ERROR {
+  color: #d00;
+}
+
+.tealight-line-error {
+  background: rgba(255,0,0,0.5);
+}

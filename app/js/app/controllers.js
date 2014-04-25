@@ -220,31 +220,42 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
       // EXECUTION
     	///////////////////////////////////////////////
 
+      function consoleMessage(type, message) {
+        if($scope.console.length > 100)
+          $scope.console = $scope.console.slice(1);
+        $scope.console.push({type: type, message: message});
+        $scope.$apply();
+      }
+
     	$scope.runFile = function() {
     		$scope.stopCode();
     		$scope.python_worker = new Worker("js/app/run_python.js");
 
     		$scope.saveFile("Running " + $scope.fileInfo.path);
 
-    		$scope.stdout = [];
+    		$scope.console = [];
     		initMode();
+
+
     		$scope.python_worker.addEventListener("message", function(event)
     		{
     			switch (event.data.type)
     			{
     				case "stdout":
-      				if($scope.stdout.length > 100)
-      					$scope.stdout = $scope.stdout.slice(1);
-      				$scope.stdout.push(event.data.message);
-      				$scope.$apply();
+
+              consoleMessage("INFO", event.data.message);
+
       				break;
     				case "done":
-      				$scope.stdout.push("Done!");
+
+              consoleMessage("INFO", "Done!");
       				$scope.running = false;
       				$scope.$apply();
+
       				break;
     				case "eval":
       				eval(event.data.code);
+
       				break;
     				case "rpc":
           
@@ -255,10 +266,50 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
       				break;
     				case "module_cache":
+
       				$scope.tealightSkulptModuleCache = event.data.modules;
+
       				break;
+
+
+            case "python_error":
+              var msg = event.data.message;
+              var line = event.data.line;
+              var col = event.data.col;
+
+              consoleMessage("ERROR", msg + "\n");
+              
+              $scope.editor.addLineClass(line-1, "background", "tealight-line-error")
+
+              $scope.stopCode();
+              $scope.$apply();
+              break;
+            case "js_error":
+              var msg = event.data.message;
+              var stack = event.data.stack;
+              var line = event.data.line;
+              var col = event.data.col;
+
+              console.error("JS Error triggered by line", line, "and column", col);
+              console.error(stack);
+
+              consoleMessage("ERROR", msg + "\n");
+              consoleMessage("ERROR", "See browser console for detailed (and largely unhelpful) error stack.\n")
+
+              $scope.editor.addLineClass(line-1, "background", "tealight-line-error")
+
+              $scope.stopCode();
+              $scope.$apply();
+              break;
             case "error":
-              console.error(event.data.stack);
+              var msg = event.data.message;
+              console.error(msg);
+
+              consoleMessage("ERROR", msg + "\n");
+              consoleMessage("ERROR", stack + "\n");
+
+              $scope.stopCode();
+              $scope.$apply();
               break;
 
           }

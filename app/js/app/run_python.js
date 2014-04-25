@@ -35,9 +35,11 @@ function onEvent(event, namedArgs) {
 						args.push(Sk.builtin.str(v));
 						break;
 					default:
-						output("INVALID EVENT ARGUMENT TYPE: " + typeof(v) + "\n");
-						args.push(null);
-						break;
+						handleError(new Error("Invalid event argument provided to worker. Unsupported type: " + typeof(v)));
+
+						// Everything will die now, so might as well return
+
+						return;
 				}
 			} else {
 				args.push(null);
@@ -46,8 +48,8 @@ function onEvent(event, namedArgs) {
 		try {
 			Sk.misceval.apply(h,undefined,undefined,undefined,args);			
 		} catch (e) {
-			console.error(e);
-			debugger;
+			handleError(e);
+			return;
 		}
 	}
 }
@@ -100,13 +102,25 @@ function builtinRead(x) {
 	throw "File not found: '" + x + "'";
 }
 
-function output(text) {
+function stdout(text) {
 	postMessage({type: "stdout", message: text});	
+}
+
+function handleError(e) {
+	eventHandlers = {};
+
+	if (e instanceof Sk.builtin.Exception) {
+		postMessage({type: "python_error", message: e.toString(), line: e.lineno == "<unknown>" ? null : e.lineno, col: e.colno == "<unknown>" ? null : e.colno});
+	} else if (e instanceof Error) {
+		postMessage({type: "js_error", message: "JavaScript Error: " + e.message, stack: e.stack, line: Sk.currLineNo, col: Sk.currColNo});
+	} else {
+		postMessage({type: "error", message: "Unknown error:" + e.toString()});
+	}
 }
 
 registeredHandlers = false;
 function registerEventHandler(event, handler) {
-	output("[Registering " + event + " handler.]\n");
+	stdout("[Registering " + event + " handler.]\n");
 	registeredHandlers = true;
 
 	if (!eventHandlers[event])
@@ -126,28 +140,27 @@ self.onmessage = function(event) {
 			params = event.data.params;
 
 			Sk.configure({
-				output: output,
+				output: stdout,
 				read: builtinRead,
 				syspath: ["skulpt-modules"]
 			});
 
-
+			// LOAD THE CODE
 			try {
 				var module = Sk.importMainWithBody("<stdin>", false, event.data.code);
 			} catch (e) {
 				if (e instanceof OutOfMovesError) {
-					output("Run out of moves!\n");
+					stdout("Run out of moves!\n");
 					postMessage({type: "done"});
 					return;
 				} else {
-					if (e instanceof Error) 
-						postMessage({type: "error", message: e.message, stack: e.stack});
-					else
-						throw e;//postMessage({type: "error", message: "" + e});
+					handleError(e);
 
 					return;					
 				}
 			}
+
+			// CAPTURE EVENT HANDLERS
 
 			for(var n in module.$d) {
 				if (n.indexOf("handle_") === 0 && module.$d[n].func_code) {
@@ -165,7 +178,15 @@ self.onmessage = function(event) {
 				}
 			}
 
-			eval(module);
+			// EVAL THE CODE. NOT SURE WHAT THIS DOES (!)
+			try {
+				eval(module);
+			} catch(e) {
+				handleError(e);
+				return;
+			}
+
+			// IF NO EVENT HANDLERS, SIGNAL THAT WE'RE DONE.
 
 			if(!registeredHandlers)
 				postMessage({type: "done"});

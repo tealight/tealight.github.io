@@ -2,9 +2,9 @@ var $builtinmodule = function(name)
 {
     var mod = {};
 	
-    mod.move = new Sk.builtin.func(function(distance) { // distance will be a Sk.builtin.nmbr
-    	if (!distance)
-    		throw Error("blah");
+    mod.move = new Sk.builtin.func(function(distance) { // distance will be a Sk.builtin.nmbr    	
+    	Sk.builtin.pyCheckArgs("move", arguments, 1, 1);
+    	Sk.builtin.pyCheckType("distance", "number", Sk.builtin.checkNumber(distance));
     	rpc("move", distance.v);
     });
 	

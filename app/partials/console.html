@@ -1,1 +1,1 @@
-<span ng-repeat="line in lines track by $index">{{line}}</span>
+<span ng-repeat="message in messages track by $index" class="{{'console-message-' + message.type}}">{{message.message}}</span>
