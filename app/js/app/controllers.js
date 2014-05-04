@@ -233,7 +233,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
         $scope.console.push({type: type, message: message, id: nextMessageId++});
 
         if (new Date().getTime()  - lastConsoleUpdateTime > 100) {
-          $scope.$apply();
+          $scope.$digest();
           lastConsoleUpdateTime = new Date().getTime();
         }
       }
@@ -319,6 +319,9 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
     	$scope.runFile = function() {
     		$scope.stopCode();
+
+        $scope.console = [];
+
     		$scope.python_worker = new Worker("js/app/run_python.js");
 
     		$scope.saveFile("Running " + $scope.fileInfo.path);
