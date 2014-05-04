@@ -47,6 +47,15 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
         templateUrl: "partials/console.html",
 
         link: function(scope, element, attrs) {
+/*
+          scope.control.addMessage = function(type, message) {
+            if ($(element).find("span").length > 100) {
+              $(element).find("span").first().remove();
+            }
+
+            $(element).append($("<span />").addClass("console-message-" + type).html(message));
+            element.scrollTop(element[0].scrollHeight);
+          }*/
 
           scope.$watch('messages', function(newVal, oldVal, scope) {
             element.scrollTop(element[0].scrollHeight);

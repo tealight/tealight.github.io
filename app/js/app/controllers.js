@@ -50,6 +50,8 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
     	});
     	$scope.tealightSkulptModuleCache = {};
 
+      $scope.console = [];
+
       // Make sure that the editor is loaded, and we have a full list of files. Then load the first file.
 
       Promise.all([
@@ -220,58 +222,54 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
       // EXECUTION
     	///////////////////////////////////////////////
 
+      var lastConsoleUpdateTime = 0;
+      var nextMessageId = 0;
+
       function consoleMessage(type, message) {
-        if($scope.console.length > 100)
+        /*
+        while($scope.console.length > 100)
           $scope.console = $scope.console.slice(1);
-        $scope.console.push({type: type, message: message});
-        $scope.$apply();
+*/
+        $scope.console.push({type: type, message: message, id: nextMessageId++});
+
+        if (new Date().getTime()  - lastConsoleUpdateTime > 10) {
+          $scope.$apply();
+          lastConsoleUpdateTime = new Date().getTime();
+        }
       }
 
-    	$scope.runFile = function() {
-    		$scope.stopCode();
-    		$scope.python_worker = new Worker("js/app/run_python.js");
-
-    		$scope.saveFile("Running " + $scope.fileInfo.path);
-
-    		$scope.console = [];
-    		initMode();
-
-
-    		$scope.python_worker.addEventListener("message", function(event)
-    		{
-    			switch (event.data.type)
-    			{
-    				case "stdout":
+      function onWorkerMessage(event) {
+          switch (event.data.type)
+          {
+            case "stdout":
 
               consoleMessage("INFO", event.data.message);
 
-      				break;
-    				case "done":
+              break;
+            case "done":
 
               consoleMessage("INFO", "Done!");
-      				$scope.running = false;
-      				$scope.$apply();
+              $scope.running = false;
+              $scope.$apply();
 
-      				break;
-    				case "eval":
-      				eval(event.data.code);
+              break;
+            case "eval":
+              eval(event.data.code);
 
-      				break;
-    				case "rpc":
+              break;
+            case "rpc":
           
               var fn = event.data.fn;
               var args = event.data.args;
-      				
+              
               modeObj[fn].apply(modeObj, args);
 
-      				break;
-    				case "module_cache":
+              break;
+            case "module_cache":
 
-      				$scope.tealightSkulptModuleCache = event.data.modules;
+              $scope.tealightSkulptModuleCache = event.data.modules;
 
-      				break;
-
-
+              break;
             case "python_error":
               var msg = event.data.message;
               var line = event.data.line;
@@ -283,8 +281,10 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
               $scope.stopCode();
               $scope.$apply();
+
               break;
             case "js_error":
+
               var msg = event.data.message;
               var stack = event.data.stack;
               var line = event.data.line;
@@ -300,8 +300,10 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
               $scope.stopCode();
               $scope.$apply();
+
               break;
             case "error":
+
               var msg = event.data.message;
               console.error(msg);
 
@@ -310,10 +312,21 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
               $scope.stopCode();
               $scope.$apply();
-              break;
 
+              break;
           }
-        });
+      }
+
+    	$scope.runFile = function() {
+    		$scope.stopCode();
+    		$scope.python_worker = new Worker("js/app/run_python.js");
+
+    		$scope.saveFile("Running " + $scope.fileInfo.path);
+
+    		initMode();
+
+
+    		$scope.python_worker.addEventListener("message", onWorkerMessage);
 
     		$scope.python_worker.postMessage({type: "MODULES", modules: $scope.tealightSkulptModuleCache});
     		$scope.python_worker.postMessage({type: "RUN", code: $scope.editor.getValue(), params: modeParams});
