@@ -226,13 +226,13 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
       var nextMessageId = 0;
 
       function consoleMessage(type, message) {
-        /*
+
         while($scope.console.length > 100)
-          $scope.console = $scope.console.slice(1);
-*/
+          $scope.console.shift();
+
         $scope.console.push({type: type, message: message, id: nextMessageId++});
 
-        if (new Date().getTime()  - lastConsoleUpdateTime > 10) {
+        if (new Date().getTime()  - lastConsoleUpdateTime > 100) {
           $scope.$apply();
           lastConsoleUpdateTime = new Date().getTime();
         }

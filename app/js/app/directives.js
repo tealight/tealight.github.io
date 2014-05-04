@@ -57,8 +57,14 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
             element.scrollTop(element[0].scrollHeight);
           }*/
 
+          var scrollTimeout = null;
           scope.$watch('messages', function(newVal, oldVal, scope) {
-            element.scrollTop(element[0].scrollHeight);
+
+            clearTimeout(scrollTimeout);
+
+            scrollTimeout = setTimeout(function() {
+              element.scrollTop(element[0].scrollHeight);
+            }, 1);
           }, true)
         },
 
