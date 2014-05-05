@@ -139,9 +139,9 @@ define(["foundation", "angular", "angular-route", "app/filters", "app/services",
 					document.location.href = document.location.href.split("?")[0] + "#!" + target;
 
 					resolve();
-				}).catch(function() { reject(); });
+				}).catch(function(e) { reject(e); });
 			}
-		}).catch(function() {
+		}).catch(function(e) {
 
 			$rootScope.loggingIn = false;
 			console.warn("Failed to load github. Clearing cookies.");

@@ -10,9 +10,21 @@ function ev(code)
 	postMessage({type: "eval", code: code});
 }
 
+var rpcQueue = [];
+var lastRpcFlush = 0;
+
 function rpc(fn) {
-	postMessage({type: "rpc", fn: fn, args: Array.prototype.slice.call(arguments, 1)});
+	var now = new Date().getTime();
+
+	rpcQueue.push({fn: fn, time: now, args: Array.prototype.slice.call(arguments, 1)});
+
+	if (now - lastRpcFlush > 20) {
+		postMessage({type:"rpc", queue: rpcQueue});
+		rpcQueue = [];
+		lastRpcFlush = now;
+	}
 }
+
 
 var eventHandlers = {};
 
@@ -103,7 +115,7 @@ function builtinRead(x) {
 }
 
 function stdout(text) {
-	postMessage({type: "stdout", message: text});	
+	rpc("stdout", text);
 }
 
 function handleError(e) {

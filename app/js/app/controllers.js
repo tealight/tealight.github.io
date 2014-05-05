@@ -232,11 +232,17 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
         $scope.console.push({type: type, message: message, id: nextMessageId++});
 
-        if (new Date().getTime()  - lastConsoleUpdateTime > 100) {
+        if (new Date().getTime()  - lastConsoleUpdateTime > 500) {
           $scope.$digest();
           lastConsoleUpdateTime = new Date().getTime();
         }
       }
+
+      var globals = {
+        stdout: function(str) {
+          consoleMessage("INFO", str);
+        },
+      };
 
       function onWorkerMessage(event) {
           switch (event.data.type)
@@ -258,11 +264,17 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
               break;
             case "rpc":
-          
-              var fn = event.data.fn;
-              var args = event.data.args;
-              
-              modeObj[fn].apply(modeObj, args);
+            
+              var q = event.data.queue;
+
+              for (var r in q) {
+                r = q[r];
+                var fn = r.fn;
+                var args = r.args;
+                
+                var f = modeObj[fn] || globals[fn];
+                f.apply(modeObj, args);
+              }
 
               break;
             case "module_cache":

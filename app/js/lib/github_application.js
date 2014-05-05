@@ -24,8 +24,8 @@ define(["angular"], function() {
 
         hosts: {
         	"localhost:8000": {
-        		github_client_id    : "f62f2bd4954bf930bc3f",
-        		tealight_auth_code  : "61120506c461e0cf49965db3f9cf7347c68b6a235b06fb9c437e5ee4d3f81c1707b0c69f30eccc795f4368a482e104cdb5d78d0b0c728db102512b51146671349deddd6ff2900e90e7c97433b7f5fe25b14c60d7deae292a1037c14acbb22bf7"
+        		github_client_id    : "f4de972464cb742d3671",
+        		tealight_auth_code  : "6a5b3c00548a75fa03e873e0c2cc5ed39de18f879165164d63d61c0acabf791e9a44567555b0a8f69cb1d1fc65a86376a1653ee601dcced8987e235ad61cbbc4ce98702ac03a0dbc78b81eb182c4562dd436e94a745bf195c423097b275f93af"
         	},
             "www.cl.cam.ac.uk": {
                 github_client_id    : "684f073bca20ddf30b76",
