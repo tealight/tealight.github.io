@@ -242,7 +242,40 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
         stdout: function(str) {
           consoleMessage("INFO", str);
         },
+        log: function() {
+          console.log.apply(console, arguments)
+        },
+        done: function() {
+          consoleMessage("INFO", "Done!");
+          $scope.stopCode();
+          $scope.$apply();
+        }
       };
+
+      var msPerTimeStep = 0;
+      var rpcQueue = [];
+      var codeStartTime = 0;
+      setTimeout(rpcTick, 20);
+
+      function rpcTick() {
+
+        if (rpcQueue.length > 0) {
+          var now = new Date().getTime();
+
+          var executeUpToTimeStep = msPerTimeStep > 0 ? (now - codeStartTime) / msPerTimeStep : rpcQueue[rpcQueue.length - 1].timeStep;
+
+          while(rpcQueue.length > 0 && rpcQueue[0].timeStep <= executeUpToTimeStep) {
+            var r = rpcQueue.shift();
+            var fn = r.fn;
+            var args = r.args;
+            
+            var f = modeObj[fn] || globals[fn];
+            f.apply(modeObj, args);
+          }
+        }
+
+        setTimeout(rpcTick, 20);
+      }
 
       function onWorkerMessage(event) {
           switch (event.data.type)
@@ -252,29 +285,9 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
               consoleMessage("INFO", event.data.message);
 
               break;
-            case "done":
-
-              consoleMessage("INFO", "Done!");
-              $scope.running = false;
-              $scope.$apply();
-
-              break;
-            case "eval":
-              eval(event.data.code);
-
-              break;
             case "rpc":
             
-              var q = event.data.queue;
-
-              for (var r in q) {
-                r = q[r];
-                var fn = r.fn;
-                var args = r.args;
-                
-                var f = modeObj[fn] || globals[fn];
-                f.apply(modeObj, args);
-              }
+              rpcQueue.push.apply(rpcQueue, event.data.queue);
 
               break;
             case "module_cache":
@@ -332,6 +345,9 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
     	$scope.runFile = function() {
     		$scope.stopCode();
 
+        rpcQueue = [];
+        codeStartTime = new Date().getTime();
+
         $scope.console = [];
 
     		$scope.python_worker = new Worker("js/app/run_python.js");
@@ -353,6 +369,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
     			$scope.python_worker.terminate();
     			$scope.python_worker = null;
     		}
+        rpcQueue = [];
     		$scope.running = false;
     	}
 

@@ -5,35 +5,35 @@ var $builtinmodule = function(name)
     mod.move = new Sk.builtin.func(function(distance) { // distance will be a Sk.builtin.nmbr    	
     	Sk.builtin.pyCheckArgs("move", arguments, 1, 1);
     	Sk.builtin.pyCheckType("distance", "number", Sk.builtin.checkNumber(distance));
-    	rpc("move", distance.v);
+    	rpc("move", 1, distance.v);
     });
 	
 	mod.turn = new Sk.builtin.func(function(angle) {
-		rpc("turn", angle.v);
+		rpc("turn", 1, angle.v);
 	});
 	
 	mod.pen_down = new Sk.builtin.func(function() {
-		rpc("penDown");
+		rpc("penDown", 0);
 	});
 
 	mod.pen_up = new Sk.builtin.func(function() {
-		rpc("penUp");
+		rpc("penUp", 0);
 	});
 
 	mod.show_turtle = new Sk.builtin.func(function() {
-		rpc("showTurtle");
+		rpc("showTurtle", 0);
 	});
 
 	mod.hide_turtle = new Sk.builtin.func(function() {
-		rpc("hideTurtle");
+		rpc("hideTurtle", 0);
 	});
 
 	mod.color = new Sk.builtin.func(function(c) {
-		rpc("setColor", c.v);
+		rpc("setColor", 0, c.v);
 	});
 	
 	mod.speed = new Sk.builtin.func(function(s) {
-		rpc("speed", s.v);
+		rpc("speed", 0, s.v);
 	});
 
 	

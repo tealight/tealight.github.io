@@ -5,24 +5,32 @@ params = {};
 
 function OutOfMovesError() { }
 
-function ev(code)
-{
-	postMessage({type: "eval", code: code});
-}
-
 var rpcQueue = [];
 var lastRpcFlush = 0;
+var rpcTimeStep = 0;
+var rpcFlushTimeout = null;
 
-function rpc(fn) {
+function rpc(fn, duration) {
 	var now = new Date().getTime();
 
-	rpcQueue.push({fn: fn, time: now, args: Array.prototype.slice.call(arguments, 1)});
+	rpcQueue.push({fn: fn, timeStep: rpcTimeStep, args: Array.prototype.slice.call(arguments, 2)});
+	rpcTimeStep += duration;
 
 	if (now - lastRpcFlush > 20) {
-		postMessage({type:"rpc", queue: rpcQueue});
-		rpcQueue = [];
-		lastRpcFlush = now;
+		rpcFlush();
+	} else {
+		clearTimeout(rpcFlushTimeout);
+		rpcFlushTimeout = setTimeout(rpcFlush, 20);
 	}
+
+}
+
+function rpcFlush() {
+	postMessage({type:"rpc", queue: rpcQueue});
+	rpcQueue = [];
+	lastRpcFlush = new Date().getTime();
+	clearTimeout(rpcFlushTimeout);
+	rpcFlushTimeout = null;
 }
 
 
@@ -76,12 +84,12 @@ function builtinRead(x) {
 	{
 		if (tealightModules[x] === null)
 		{
-			ev("console.log('Replaying cached 404 for', \"" + x + "\");");
+			rpc("log", 0, 'Replaying cached 404 for', x);
 			throw "File not found";
 		}
 		else
 		{
-			ev("console.log('Retrieved', \"" + x + "\", 'from cache');");
+			rpc("log", 0, "Retrieved", x, "from cache");
 			return tealightModules[x];
 		}
 	}
@@ -97,7 +105,7 @@ function builtinRead(x) {
 
 		if (http.status == 200)
 		{
-			ev("console.log('Adding', \"" + url + "\", 'to cache');");
+			rpc("log", 0, "Adding", url, "to cache");
 			tealightModules[x] = http.responseText;
 			postMessage({type: "module_cache", modules: tealightModules});
 			return http.responseText;
@@ -106,7 +114,7 @@ function builtinRead(x) {
 		{
 			tealightModules[x] = null;
 			postMessage({type: "module_cache", modules: tealightModules});
-			ev("console.warn('Caching 404 for ', \"" + url + "\");");
+			rpc("log", 0, "Caching 404 for", url);
 		}
 
 	}
@@ -115,7 +123,7 @@ function builtinRead(x) {
 }
 
 function stdout(text) {
-	rpc("stdout", text);
+	rpc("stdout", 0, text);
 }
 
 function handleError(e) {
@@ -201,7 +209,7 @@ self.onmessage = function(event) {
 			// IF NO EVENT HANDLERS, SIGNAL THAT WE'RE DONE.
 
 			if(!registeredHandlers)
-				postMessage({type: "done"});
+				rpc("done");
 
 			break;
 		case "EVENT":
