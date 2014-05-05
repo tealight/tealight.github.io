@@ -68,20 +68,54 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
       // PRIVATE FUNCTIONS
     	///////////////////////////////////////////////
 
+      function robotKeyDown(e) {
+        if (e.which == 17) {
+          var now = new Date().getTime();
+          var timeStepsSoFar = (now - codeStartTime) / msPerTimeStep;
+          startTimeStep += timeStepsSoFar;
+          codeStartTime = now;
+          msPerTimeStep = 40;
+        }
+      }
+
+      function robotKeyUp(e) {
+        if (e.which == 17) {
+          var now = new Date().getTime();
+          var timeStepsSoFar = (now - codeStartTime) / msPerTimeStep;
+          startTimeStep += timeStepsSoFar;
+          codeStartTime = now;
+          msPerTimeStep = 200;
+        }
+      }
+
+      var msPerTimeStep = 0;
+      var codeStartTime = 0;
+      var startTimeStep = 0;
+
       var modeObj;
       var modeParams = {};
     	function initMode()
     	{
+        $(document).off("keydown", robotKeyDown);
+        $(document).off("keyup", robotKeyUp);
+
     		switch($scope.mode)
     		{
     			case "logo":
     			  modeObj = new Logo($('#canvas')[0]);
+            msPerTimeStep = 0;
     			  break;
           case "robot":
             modeObj = new Robot($('#canvas')[0]);
+            msPerTimeStep = 200;
+
+            $(document).on("keydown", robotKeyDown);
+            $(document).on("keyup", robotKeyUp);
+
             break;
           case "art":
             modeObj = new Art($('#canvas')[0]);
+            msPerTimeStep = 0;
             modeParams = {
               screenWidth: $('#canvas').width(),
               screenHeight: $('#canvas').height(),
@@ -225,6 +259,14 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
       var lastConsoleUpdateTime = 0;
       var nextMessageId = 0;
 
+      var consoleUpdateTimeout = null;
+      function consoleUpdate() {
+          $scope.$digest();
+          lastConsoleUpdateTime = new Date().getTime();
+          clearTimeout(consoleUpdateTimeout);
+          consoleUpdateTimeout = null;
+      }
+
       function consoleMessage(type, message) {
 
         while($scope.console.length > 100)
@@ -233,8 +275,10 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
         $scope.console.push({type: type, message: message, id: nextMessageId++});
 
         if (new Date().getTime()  - lastConsoleUpdateTime > 500) {
-          $scope.$digest();
-          lastConsoleUpdateTime = new Date().getTime();
+          consoleUpdate();
+        } else {
+          clearTimeout(consoleUpdateTimeout);
+          consoleUpdateTimeout = setTimeout(consoleUpdate, 500);
         }
       }
 
@@ -252,9 +296,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
         }
       };
 
-      var msPerTimeStep = 0;
       var rpcQueue = [];
-      var codeStartTime = 0;
       setTimeout(rpcTick, 20);
 
       function rpcTick() {
@@ -262,7 +304,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
         if (rpcQueue.length > 0) {
           var now = new Date().getTime();
 
-          var executeUpToTimeStep = msPerTimeStep > 0 ? (now - codeStartTime) / msPerTimeStep : rpcQueue[rpcQueue.length - 1].timeStep;
+          var executeUpToTimeStep = msPerTimeStep > 0 ? startTimeStep + ((now - codeStartTime) / msPerTimeStep) : rpcQueue[rpcQueue.length - 1].timeStep;
 
           while(rpcQueue.length > 0 && rpcQueue[0].timeStep <= executeUpToTimeStep) {
             var r = rpcQueue.shift();
@@ -270,7 +312,15 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
             var args = r.args;
             
             var f = modeObj[fn] || globals[fn];
-            f.apply(modeObj, args);
+            var result = f.apply(modeObj, args);
+
+            if (result instanceof Promise) {
+              function after() {
+                setTimeout(rpcTick, 20);
+              }
+              result.then(after, after);
+              return;
+            }
           }
         }
 
@@ -347,6 +397,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
         rpcQueue = [];
         codeStartTime = new Date().getTime();
+        startTimeStep = 0;
 
         $scope.console = [];
 

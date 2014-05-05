@@ -3,7 +3,7 @@ importScripts("../lib/skulpt/skulpt.js", "../lib/skulpt/skulpt-stdlib.js")
 tealightModules = {};
 params = {};
 
-function OutOfMovesError() { }
+function OutOfMovesError(state) { this.state = state; }
 
 var rpcQueue = [];
 var lastRpcFlush = 0;
@@ -32,7 +32,6 @@ function rpcFlush() {
 	clearTimeout(rpcFlushTimeout);
 	rpcFlushTimeout = null;
 }
-
 
 var eventHandlers = {};
 
@@ -171,7 +170,7 @@ self.onmessage = function(event) {
 			} catch (e) {
 				if (e instanceof OutOfMovesError) {
 					stdout("Run out of moves!\n");
-					postMessage({type: "done"});
+					rpc("moveLimitReached", 0, e.state);
 					return;
 				} else {
 					handleError(e);

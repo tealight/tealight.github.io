@@ -115,7 +115,7 @@ var $builtinmodule = function(name)
 
     	if (map) {
 
-    		rpc("setMap", map);
+    		rpc("setMap", 0, map);
 
     	} else {
 
@@ -129,7 +129,7 @@ var $builtinmodule = function(name)
     		throw new Error("Cannot move - map not initialised.");
 
     	if (state.moves >= map.limit)
-    		throw new OutOfMovesError();
+    		throw new OutOfMovesError(state);
 
 
         var delta = angleToPosDelta(state.angle)
@@ -145,20 +145,23 @@ var $builtinmodule = function(name)
 
         state.moves += 1;
 
-        rpc("updateState", state);
+        rpc("updateState", 1, JSON.parse(JSON.stringify(state)));
 
 
     });
 
     mod.turn = new Sk.builtin.func(function(steps) {
-    	if (state.moves >= map.limit)
-    		throw "Run out of moves. Terminating.";
+        if (!map)
+            throw new Error("Cannot turn - map not initialised.");
+
+        if (state.moves >= map.limit)
+            throw new OutOfMovesError(state);
 
     	state.moves += 1;
 
     	state.angle = (state.angle + steps.v) % 4;
 
-    	rpc("updateState", state);
+    	rpc("updateState", 1, JSON.parse(JSON.stringify(state)));
     });
 
     mod.look = new Sk.builtin.func(function() {

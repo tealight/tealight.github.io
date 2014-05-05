@@ -63,7 +63,7 @@ define([], function() {
 
 	Art.prototype.image = function(x,y,path) {
 
-		getImgPromise(path).then(function(i) {
+		return getImgPromise(path).then(function(i) {
 			this.ctx.drawImage(i, x, y);
 		}.bind(this));
 
@@ -74,7 +74,7 @@ define([], function() {
 	}
 
 	Art.prototype.background = function(path) {
-		getImgPromise(path).then(function(i) {
+		return getImgPromise(path).then(function(i) {
 			this.ctx.drawImage(i, 0, 0, i.width, i.height, 0, 0, this.canvas.width, this.canvas.height);
 		}.bind(this));
 	}

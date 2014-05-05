@@ -65,7 +65,6 @@ define([], function() {
 
 	var stateQueue = [];
 	var queueTimeout = null;
-	delay = 100;
 
 	var Robot = function(canvas) {
 		this.map = null;
@@ -76,45 +75,22 @@ define([], function() {
 		canvas.height = $(canvas).height();
 		
 		this.ctx = canvas.getContext("2d");
-		delay = 100;
-
-		$(document).on("keydown", function(e) {
-			if (e.which == 17)
-				delay = 10;
-		});
-		$(document).on("keyup", function(e) {
-			if (e.which == 17)
-				delay = 100;
-		});
 
 	};
 
 	Robot.prototype.setMap = function(map) {
 		this.map = map;
-
-		clearTimeout(queueTimeout);
-		queueTimeout = null;
-		stateQueue = [];
 		redraw(this.ctx, map, map.initialState);
 	};
 
 	Robot.prototype.updateState = function(state) {
-		stateQueue.push(state);
-
-		if (!queueTimeout) {
-			var self = this;
-
-			function next() {
-				redraw(self.ctx, self.map, stateQueue.shift());
-				if (stateQueue.length > 0)
-					queueTimeout = setTimeout(next, delay);
-				else
-					queueTimeout = null;
-			}
-
-			queueTimeout = setTimeout(next, delay);
-		}
+		console.log("Updating:", state);
+		redraw(this.ctx, this.map, state);
 	};
+
+	Robot.prototype.moveLimitReached = function(state) {
+		console.warn("Out of moves:", state.moves);
+	}
 
 
 	return Robot;
