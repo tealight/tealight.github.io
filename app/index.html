@@ -15,43 +15,43 @@
 </head>
 <body ng-controller="TealightController">
 
-<div class="contain-to-grid">
-<nav class="top-bar" data-topbar>
-  <ul class="title-area">
-    <li class="name">
-      <h1><a href="#!/home">Tealight</a></h1>
-    </li>
-    <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
-  </ul>
+  <div class="contain-to-grid">
+    <nav class="top-bar" data-topbar>
+      <ul class="title-area">
+        <li class="name">
+          <h1><a href="#!/home">Tealight</a></h1>
+        </li>
+        <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
+      </ul>
 
-  <section class="top-bar-section">
-    <!-- Right Nav Section -->
-    <ul class="right">
-      <li class="has-form"><a ng-show="(!userProfile && !loggingIn)" href="#!/login" class="button radius success">Login</a></li>
-      <li class="has-form"><a ng-show="userProfile" href="javascript:void(0);" class="button radius alert" ng-click="logout()">Logout</a></li>
-      <li class="divider"></li>
-    </ul>
-
-    <!-- Left Nav Section -->
-    <ul class="left">
-      <li class="divider"></li>
-      <li><a href="#!/home">Home</a></li>
-      <li class="divider"></li>
-      <li><a href="#!/about">About</a></li>
-      <li class="divider"></li>
-      <li class="has-dropdown">
-        <a href="#!/code">Code!</a>
-        <ul class="dropdown">
-          <li><a href="#!/code/logo">Logo</a></li>
-          <li><a href="#!/code/robot">Robot</a></li>
-          <li><a href="#!/code/art">Art</a></li>
+      <section class="top-bar-section">
+        <!-- Right Nav Section -->
+        <ul class="right">
+          <li class="has-form"><a ng-show="(!userProfile && !loggingIn)" href="#!/login" class="button radius success">Login</a></li>
+          <li class="has-form"><a ng-show="userProfile" href="javascript:void(0);" class="button radius alert" ng-click="logout()">Logout</a></li>
+          <li class="divider"></li>
         </ul>
-      </li>
-      <li class="divider"></li>
-    </ul>
-  </section>
-</nav>
-</div>
+
+        <!-- Left Nav Section -->
+        <ul class="left">
+          <li class="divider"></li>
+          <li><a href="#!/home">Home</a></li>
+          <li class="divider"></li>
+          <li><a href="#!/about">About</a></li>
+          <li class="divider"></li>
+          <li class="has-dropdown">
+            <a href="#!/code">Code!</a>
+            <ul class="dropdown">
+              <li><a href="#!/code/logo">Logo</a></li>
+              <li><a href="#!/code/robot">Robot</a></li>
+              <li><a href="#!/code/art">Art</a></li>
+            </ul>
+          </li>
+          <li class="divider"></li>
+        </ul>
+      </section>
+    </nav>
+  </div>
 
 
   <div ng-view class="content"></div>

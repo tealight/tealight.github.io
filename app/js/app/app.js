@@ -61,6 +61,7 @@ define(["foundation", "angular", "angular-route", "app/filters", "app/services",
 
 	  $routeProvider.when("/code", {templateUrl: "partials/code.html", controller: "CodeController", resolve: { user: loginResolver }});
 	  $routeProvider.when("/code/:mode", {templateUrl: "partials/mode.html", controller: "ModeController", resolve: { user: loginResolver }});
+	  $routeProvider.when("/code/:mode/:fileName", {templateUrl: "partials/mode.html", controller: "ModeController", resolve: { user: loginResolver }});
 
 	  $routeProvider.when("/login", {template: "", controller: "LoginController"});
 	  $routeProvider.when("/login_progress", {template: ""});

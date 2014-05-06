@@ -5,6 +5,11 @@ params = {};
 
 function OutOfMovesError(state) { this.state = state; }
 
+function log() {
+	rpc.apply(null, ["log", 0].concat(Array.prototype.slice.call(arguments, 0)));
+	rpcFlush();
+}
+
 var rpcQueue = [];
 var lastRpcFlush = 0;
 var rpcTimeStep = 0;
@@ -43,9 +48,9 @@ function onEvent(event, namedArgs) {
 
 		var args = [];
 		for(var j in h.func_code.co_varnames) {
-			var v = namedArgs[h.func_code.co_varnames[j]] || null;
+			var v = namedArgs[h.func_code.co_varnames[j]];
 
-			if (v) {
+			if (v != null) {
 				switch(typeof(v)) {
 					case "number":
 						args.push(Sk.builtin.nmber(v));
@@ -61,6 +66,7 @@ function onEvent(event, namedArgs) {
 						return;
 				}
 			} else {
+				log("Filling in missing argument with null. namedArgs =", namedArgs);
 				args.push(null);
 			}
 		}
@@ -83,12 +89,12 @@ function builtinRead(x) {
 	{
 		if (tealightModules[x] === null)
 		{
-			rpc("log", 0, 'Replaying cached 404 for', x);
+			log('Replaying cached 404 for', x);
 			throw "File not found";
 		}
 		else
 		{
-			rpc("log", 0, "Retrieved", x, "from cache");
+			log("Retrieved", x, "from cache");
 			return tealightModules[x];
 		}
 	}
@@ -104,7 +110,7 @@ function builtinRead(x) {
 
 		if (http.status == 200)
 		{
-			rpc("log", 0, "Adding", url, "to cache");
+			log("Adding", url, "to cache");
 			tealightModules[x] = http.responseText;
 			postMessage({type: "module_cache", modules: tealightModules});
 			return http.responseText;
@@ -113,7 +119,7 @@ function builtinRead(x) {
 		{
 			tealightModules[x] = null;
 			postMessage({type: "module_cache", modules: tealightModules});
-			rpc("log", 0, "Caching 404 for", url);
+			log("Caching 404 for", url);
 		}
 
 	}

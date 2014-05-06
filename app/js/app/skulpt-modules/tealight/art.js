@@ -7,6 +7,12 @@ var $builtinmodule = function(name)
     });
 
     mod.line = new Sk.builtin.func(function(x1, y1, x2, y2) {
+        Sk.builtin.pyCheckArgs("line", arguments, 4, 4);
+        Sk.builtin.pyCheckType("x1", "number", Sk.builtin.checkNumber(x1));
+        Sk.builtin.pyCheckType("x2", "number", Sk.builtin.checkNumber(x2));
+        Sk.builtin.pyCheckType("y1", "number", Sk.builtin.checkNumber(y1));
+        Sk.builtin.pyCheckType("y2", "number", Sk.builtin.checkNumber(y2));
+
     	rpc("line", 1, x1.v, y1.v, x2.v, y2.v);
     });
 

@@ -3,14 +3,14 @@
 	<div id="code-panel" class="small-6 columns" >
 		<div class="row header">
 			<div class="small-4 columns">
-				<h3>{{fileInfo.name}}</h3>
+				<h3>{{file.name}}</h3>
 			</div> 
 			<div class="small-4 columns text-right">
 				<a class="button small radius alert" ng-click="stopCode()" ng-show="running">Stop</a>
 				<a class="button small radius success" ng-click="runFile()" ng-bind="running? 'Restart' : 'Run'">Run</a>
 			</div>
 			<div class="small-4 columns">
-				<select ng-model="fileInfo" ng-options="f.name for f in files">
+				<select ng-model="fileSelection" ng-options="f.name for f in files">
 				</select>
 			</div> 
 		</div> 
