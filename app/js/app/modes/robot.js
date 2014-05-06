@@ -2,6 +2,8 @@ define([], function() {
 
 	function redraw(ctx, map, state) {
 
+		state = state || map.initialState;
+
 		var widthPx = this.canvas.width;
 		var heightPx = this.canvas.height;
 		var widthCells = map.size[0];
@@ -37,12 +39,12 @@ define([], function() {
 		// DRAW FRUIT
 
 		ctx.fillStyle = '#f00';
-
 		for(var i in state.fruit) {
 			var f = state.fruit[i];
-
+			var x = originX + (f[0] + 0.5) * cellSize;
+			var y = originY + (f[1] + 0.5) * cellSize;
 			ctx.beginPath();
-			ctx.arc(originX + (f[0] + 0.5) * cellSize, originY + (f[1] + 0.5) * cellSize, cellSize * 0.4, 0, Math.PI * 2);
+			ctx.arc(x, y, cellSize * 0.4, 0, Math.PI * 2);
 			ctx.fill();
 		}
 
@@ -66,8 +68,8 @@ define([], function() {
 	var stateQueue = [];
 	var queueTimeout = null;
 
-	var Robot = function(canvas) {
-		this.map = null;
+	var Robot = function(canvas, map) {
+		this.map = map;
 
 		this.canvas = canvas;
 		
@@ -76,11 +78,8 @@ define([], function() {
 		
 		this.ctx = canvas.getContext("2d");
 
-	};
 
-	Robot.prototype.setMap = function(map) {
-		this.map = map;
-		redraw(this.ctx, map, map.initialState);
+		redraw(this.ctx, this.map, this.state);
 	};
 
 	Robot.prototype.updateState = function(state) {

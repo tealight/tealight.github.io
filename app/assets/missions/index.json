@@ -1,0 +1,134 @@
+[
+	{
+		"name": "search",
+		"mapFile": "default.map",
+		"fruitIcon": "fruit.png",
+		"initialState": {
+			"pos": [11,11],
+			"angle": "E"
+		},
+		"target": 10,
+		"limit": 400
+	},
+	{
+		"name": "chess",
+		"mapFile": "chessboard.map",
+		"fruitIcon": "chalk.png",
+		"initialState": {
+			"pos": [10,36],
+			"angle": "N"
+		},
+		"target": 512,
+		"limit": 700
+	},
+	{
+		"name": "trail",
+		"mapFile": "trail.map",
+		"fruitIcon": "footprint.png",
+		"initialState": {
+			"pos": [8,35],
+			"angle": "N"
+		},
+		"target": 280,
+		"limit": 400
+	},
+	{
+		"name": "cleanup",
+		"mapFile": "convex_blob.map",
+		"fruitIcon": "water.png",
+		"initialState": {
+			"pos": [22,27],
+			"angle": "E"
+		},
+		"target": 372,
+		"limit": 500
+	},
+	{
+		"name": "maze",
+		"mapFile": "maze.map",
+		"fruitIcon": "star.png",
+		"initialState": {
+			"pos": [53,38],
+			"angle": "W"
+		},
+		"target": 1,
+		"limit": 1250
+	},
+	{
+		"name": "refuel",
+		"mapFile": "cave.map",
+		"fruitIcon": "fuel_canister.png",
+		"initialState": {
+			"pos": [9,15],
+			"angle": "E"
+		},
+		"target": 32,
+		"limit": 400
+	},
+	{
+		"name": "mine",
+		"mapFile": "mine.map",
+		"fruitIcon": "ore_block.png",
+		"initialState": {
+			"pos": [21,16],
+			"angle": "S"
+		},
+		"target": 375,
+		"limit": 400
+	},
+	{
+		"name": "palace",
+		"mapFile": "palace.map",
+		"fruitIcon": "ribbon_chain.png",
+		"initialState": {
+			"pos": [3,25],
+			"angle": "E"
+		},
+		"target": 100,
+		"limit": 400
+	},
+	{
+		"name": "field",
+		"mapFile": "field.map",
+		"fruitIcon": "flower.png",
+		"initialState": {
+			"pos": [52,20],
+			"angle": "W"
+		},
+		"target": 30,
+		"limit": 400
+	},
+	{
+		"name": "treasure",
+		"mapFile": "treasure.map",
+		"fruitIcon": "gem.png",
+		"initialState": {
+			"pos": [4,2],
+			"angle": "S"
+		},
+		"target": 50,
+		"limit": 400
+	},
+	{
+		"name": "vine",
+		"mapFile": "tree.map",
+		"fruitIcon": "grape.png",
+		"initialState": {
+			"pos": [25,37],
+			"angle": "N"
+		},
+		"target": 358,
+		"limit": 1111
+	},
+	{
+		"name": "raid",
+		"mapFile": "cellar.map",
+		"fruitIcon": "bottle.png",
+		"initialState": {
+			"pos": [24,12],
+			"angle": "E"
+		},
+		"target": 100,
+		"limit": 1000
+	}
+]

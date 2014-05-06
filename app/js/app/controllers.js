@@ -1,6 +1,42 @@
 'use strict';
 define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "app/modes/art"], function(require) {
+/*
+	var maps = {
+    	"apples": {
 
+            size: [30,20],
+
+    		walls: [
+                [0,10],
+                [1,10],
+                [2,10],
+                [3,10],
+                [4,10],
+                [5,10],
+                [6,10],
+            ],
+
+            limit: 200,
+
+            target: 1,
+
+            wallIcon: "foo",
+
+            fruitIcon: "bar",
+
+            initialState: {
+                fruit: [
+                    [3,7],
+                ],
+                pos: [0, 0],
+                angle: 0,
+                moves: 0,
+                score: 0,
+            }
+    	}
+    };
+
+*/
 	var Logo = require("app/modes/logo");
 	var Robot = require("app/modes/robot");
 	var Art = require("app/modes/art");
@@ -36,8 +72,12 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 	}])
 
 
-	.controller('ModeController', ["$scope", "$routeParams", "$rootScope", "$location", "github", function($scope, $routeParams, $rootScope, $location, github) {
+	.controller('ModeController', ["$scope", "$routeParams", "$rootScope", "$location", "Missions", "github", function($scope, $routeParams, $rootScope, $location, Missions, github) {
 		console.log("ModeController for user:", $rootScope.userProfile);
+
+		Missions.load.then(function(missions) {
+			console.log("Missions loaded.");
+		})
 
 		///////////////////////////////////////////////
 		// INITIALISATION
@@ -73,7 +113,9 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 					$scope.$apply();
 				});
 
-			}).then(function() { return listFiles(); }).then(function() {
+			}).then(function() { 
+				return listFiles(); 
+			}).then(function() {
 
 				for(var i in $scope.files) {
 					if ($scope.files[i].path == filePath) {
@@ -82,7 +124,9 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 					}
 				}
 				$scope.$apply();
+				initMode();
 			});
+
 		} else {
 			// We have not chosen a file in the url.
 			// List files, pick the first one, and reload.
@@ -134,7 +178,10 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 					msPerTimeStep = 0;
 					break;
 				case "robot":
-					modeObj = new Robot($('#canvas')[0]);
+					modeParams = {
+						map: Missions.missions[$scope.file.name.replace(".py","")],
+					}
+					modeObj = new Robot($('#canvas')[0], modeParams.map);
 					msPerTimeStep = 200;
 
 					$(document).on("keydown", robotKeyDown);
@@ -193,7 +240,8 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 			return github.listFiles(github.user.login, "tealight-files", $scope.mode).then(function(files) {
 
 				$scope.files = files;
-				$scope.files.push({name: "<New File...>", createNew: true});
+				if ($scope.mode != "robot")
+					$scope.files.push({name: "<New File...>", createNew: true});
 				$scope.$apply();
 
 			}).catch(function(e) {
@@ -389,8 +437,8 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
 					$scope.editor.addLineClass(line-1, "background", "tealight-line-error")
 
-					$scope.stopCode();
-					$scope.$apply();
+					//$scope.stopCode();
+					//$scope.$apply();
 
 					break;
 				case "error":

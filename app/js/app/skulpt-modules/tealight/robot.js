@@ -2,43 +2,8 @@ var $builtinmodule = function(name)
 {
     var mod = {};
 
-    var maps = {
-    	"apples": {
-
-            size: [30,20],
-
-    		walls: [
-                [0,10],
-                [1,10],
-                [2,10],
-                [3,10],
-                [4,10],
-                [5,10],
-                [6,10],
-            ],
-
-            limit: 200,
-
-            target: 1,
-
-            wallIcon: "foo",
-
-            fruitIcon: "bar",
-
-            initialState: {
-                fruit: [
-                    [3,7],
-                ],
-                pos: [0, 0],
-                angle: 0,
-                moves: 0,
-                score: 0,
-            }
-    	}
-    };
-
-    var map = null;
-    var state = null;
+    var map = params.map;
+    var state = JSON.parse(JSON.stringify(map.initialState));
 
     function canMoveTo(map, pos) {
 
@@ -105,7 +70,7 @@ var $builtinmodule = function(name)
 
         return null;
     }
-
+/*
     mod.chooseMap = new Sk.builtin.func(function(mapName) {
     	if (map)
     		throw new Error("Map already initialised. Cannot choose twice.");
@@ -123,7 +88,7 @@ var $builtinmodule = function(name)
 
     	}
     });
-
+*/
     mod.move = new Sk.builtin.func(function() {
     	if (!map)
     		throw new Error("Cannot move - map not initialised.");

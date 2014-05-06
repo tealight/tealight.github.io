@@ -24,5 +24,68 @@ define(["angular"], function() {
 		this.requireLogin = function() {
 			return $rootScope.userProfile ? Promise.resolve() : Promise.reject("unauthorized");
 		};
+	}])
+
+	.service('Missions', ["$http", function($http) {
+
+		function parseMap(mapStr) {
+			var walls = [];
+			var fruit = [];
+			var lines = mapStr.split("\n");
+
+			for(var y in lines) {
+				for(var x in lines[y]) {
+					y = parseInt(y);
+					x = parseInt(x);
+					switch(lines[y][x]) {
+						case "#":
+							walls.push([x,y]);
+							break;
+						case "o":
+							fruit.push([x,y]);
+							break;
+					}
+				}
+			}
+
+			return {
+				size: [x,y],
+				walls: walls,
+				fruit: fruit
+			};
+		}
+		this.missions = {};
+		var self = this;
+		this.load = new Promise(function(resolve, reject) {
+			$http.get("assets/missions/index.json").success(function(missions) {
+
+				var loadPs = [];
+				for(var i in missions) {
+					var m = missions[i];
+
+					var loadP = new Promise(function(rsv, rej) {
+						$http.get("assets/missions/" + m.mapFile).success((function(m) { return function(mapFile) {
+
+								var mapData = parseMap(mapFile);
+								m.walls = mapData.walls;
+								m.size = mapData.size;
+								m.initialState.fruit = mapData.fruit;
+								m.initialState.angle = ["N", "E", "S", "W"].indexOf(m.initialState.angle);
+								self.missions[m.name] = m;
+								rsv();
+							}
+						})(m));
+					});
+
+					loadPs.push(loadP);
+
+				}
+
+				Promise.all(loadPs).then(function() {
+					resolve(missions);					
+				});
+			});
+		});
+
 	}]);
 });
