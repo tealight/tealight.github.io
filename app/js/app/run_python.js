@@ -135,11 +135,11 @@ function handleError(e) {
 	eventHandlers = {};
 
 	if (e instanceof Sk.builtin.Exception) {
-		postMessage({type: "python_error", message: e.toString(), line: e.lineno == "<unknown>" ? null : e.lineno, col: e.colno == "<unknown>" ? null : e.colno});
+		rpc("python_error", 0, {message: e.toString(), line: e.lineno == "<unknown>" ? null : e.lineno, col: e.colno == "<unknown>" ? null : e.colno});
 	} else if (e instanceof Error) {
-		postMessage({type: "js_error", message: "JavaScript Error: " + e.message, stack: e.stack, line: Sk.currLineNo, col: Sk.currColNo});
+		rpc("js_error", 0, {message: "JavaScript Error: " + e.message, stack: e.stack, line: Sk.currLineNo, col: Sk.currColNo});
 	} else {
-		postMessage({type: "error", message: "Unknown error:" + e.toString()});
+		rpc("error", 0, {message: "Unknown error:" + e.toString()});
 	}
 }
 

@@ -20,6 +20,18 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
 				mode: "python",
 				lineNumbers: true,
 				theme: "neat",
+				tabSize: 2,
+			    extraKeys: {
+			      Tab: function(cm) {
+			        if (cm.getSelection().length)
+			        	CodeMirror.commands.indentMore(cm)
+			        else 
+			        	cm.replaceSelection("  ", "end")
+			    	},
+			      'Shift-Tab': function(cm) {
+			        CodeMirror.commands.indentLess(cm)
+			    	}
+			    }
 			});
 
 			scope.editor.on("change", function() {

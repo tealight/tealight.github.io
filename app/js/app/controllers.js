@@ -357,7 +357,47 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 				consoleMessage("INFO", "Done!");
 				$scope.stopCode();
 				$scope.$apply();
-			}
+			},
+			python_error: function(e) {
+				var msg = e.message;
+				var line = e.line;
+				var col = e.col;
+
+				consoleMessage("ERROR", msg + "\n");
+
+				$scope.editor.addLineClass(line-1, "background", "tealight-line-error")
+
+				$scope.stopCode();
+				$scope.$apply();
+			},
+			js_error: function(e) {
+				var msg = e.message;
+				var stack = e.stack;
+				var line = e.line;
+				var col = e.col;
+
+				console.error("JS Error triggered by line", line, "and column", col);
+				console.error(stack);
+
+				consoleMessage("ERROR", msg + "\n");
+				consoleMessage("ERROR", "See browser console for detailed (and largely unhelpful) error stack.\n")
+
+				$scope.editor.addLineClass(line-1, "background", "tealight-line-error")
+
+				$scope.stopCode();
+				$scope.$apply();
+			},
+			error: function(e) {
+				var msg = e.message;
+				console.error(msg);
+
+				consoleMessage("ERROR", msg + "\n");
+				consoleMessage("ERROR", stack + "\n");
+
+				$scope.stopCode();
+				$scope.$apply();
+			},
+
 		};
 
 		var rpcQueue = [];
@@ -379,7 +419,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 					var result = f.apply(modeObj, args);
 
 					if (result instanceof Promise) {
-						function after() {
+						var after = function() {
 							setTimeout(rpcTick, 20);
 						}
 						result.then(after, after);
@@ -394,11 +434,6 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 		function onWorkerMessage(event) {
 			switch (event.data.type)
 			{
-				case "stdout":
-
-					consoleMessage("INFO", event.data.message);
-
-					break;
 				case "rpc":
 
 					rpcQueue.push.apply(rpcQueue, event.data.queue);
@@ -407,50 +442,6 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 				case "module_cache":
 
 					$scope.tealightSkulptModuleCache = event.data.modules;
-
-					break;
-				case "python_error":
-					var msg = event.data.message;
-					var line = event.data.line;
-					var col = event.data.col;
-
-					consoleMessage("ERROR", msg + "\n");
-
-					$scope.editor.addLineClass(line-1, "background", "tealight-line-error")
-
-					$scope.stopCode();
-					$scope.$apply();
-
-					break;
-				case "js_error":
-
-					var msg = event.data.message;
-					var stack = event.data.stack;
-					var line = event.data.line;
-					var col = event.data.col;
-
-					console.error("JS Error triggered by line", line, "and column", col);
-					console.error(stack);
-
-					consoleMessage("ERROR", msg + "\n");
-					consoleMessage("ERROR", "See browser console for detailed (and largely unhelpful) error stack.\n")
-
-					$scope.editor.addLineClass(line-1, "background", "tealight-line-error")
-
-					//$scope.stopCode();
-					//$scope.$apply();
-
-					break;
-				case "error":
-
-					var msg = event.data.message;
-					console.error(msg);
-
-					consoleMessage("ERROR", msg + "\n");
-					consoleMessage("ERROR", stack + "\n");
-
-					$scope.stopCode();
-					$scope.$apply();
 
 					break;
 			}

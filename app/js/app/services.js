@@ -71,6 +71,8 @@ define(["angular"], function() {
 								m.size = mapData.size;
 								m.initialState.fruit = mapData.fruit;
 								m.initialState.angle = ["N", "E", "S", "W"].indexOf(m.initialState.angle);
+								m.initialState.moves = 0;
+								m.initialState.score = 0;
 								self.missions[m.name] = m;
 								rsv();
 							}
