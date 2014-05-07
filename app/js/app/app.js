@@ -76,14 +76,17 @@ define(["foundation", "angular", "angular-route", "app/filters", "app/services",
 	  function loginResolver(LoginChecker) {
 	  	return LoginChecker.requireLogin();
 	  }
+	  function tealightFilesResolver(TealightFilesChecker) {
+	  	return TealightFilesChecker.requireTealightFiles();
+	  }
 	  loginResolver['$inject'] = ['LoginChecker'];
 
 	  $routeProvider.when('/home', {templateUrl: 'partials/home.html', controller: 'HomeController'});
 	  $routeProvider.when('/about', {templateUrl: 'partials/about.html', controller: 'AboutController'});
 
-	  $routeProvider.when("/code", {templateUrl: "partials/code.html", controller: "CodeController", resolve: { user: loginResolver }});
-	  $routeProvider.when("/code/:mode", {templateUrl: "partials/mode.html", controller: "ModeController", resolve: { user: loginResolver }});
-	  $routeProvider.when("/code/:mode/:fileName", {templateUrl: "partials/mode.html", controller: "ModeController", resolve: { user: loginResolver }});
+	  $routeProvider.when("/code", {templateUrl: "partials/code.html", controller: "CodeController", resolve: { user: loginResolver, repo: tealightFilesResolver }});
+	  $routeProvider.when("/code/:mode", {templateUrl: "partials/mode.html", controller: "ModeController", resolve: { user: loginResolver, repo: tealightFilesResolver }});
+	  $routeProvider.when("/code/:mode/:fileName", {templateUrl: "partials/mode.html", controller: "ModeController", resolve: { user: loginResolver, repo: tealightFilesResolver }});
 
 	  $routeProvider.when("/login", {template: "", controller: "LoginController"});
 	  $routeProvider.when("/login_progress", {template: ""});
@@ -97,39 +100,6 @@ define(["foundation", "angular", "angular-route", "app/filters", "app/services",
 
 		$(document).foundation();
 
-		function waitForRepo(repoOwner, repoName, timeoutSecs) {
-			return new Promise(function(resolve, reject){
-			    var recheckRepo = function()
-			    {
-			        // Every 1 sec, check whether repo exists
-			        var r = github.getRepo(repoOwner, repoName).then(function()
-			        {
-			            // It exists
-			            console.log("Repo created successfully");
-			            resolve();
-			        }).catch(function()
-			        {
-			            // If not, wait another second.
-			            console.log("Repo still doesn't exist. Waiting...");
-			            if (timeoutSecs > 0)
-			            {
-			            	// *Now* it exists.
-			                timeoutSecs -= 1;
-			                setTimeout(recheckRepo, 1000);
-			            }
-			            else
-			            {
-			                // Timeout expired
-			                console.error("Timeout expired waiting for repo fork.");
-			                reject("Timeout expired");
-			            }
-			        });
-			    }
-
-			    // Force this to take long enough for the dialog to appear.
-			    setTimeout(recheckRepo, 3000);
-			});
-		}
 
 
 		// On document load, we either have a code in the query string, or a token cookie, or neither.
@@ -179,38 +149,6 @@ define(["foundation", "angular", "angular-route", "app/filters", "app/services",
 			$rootScope.loggingIn = false;
 
 			$rootScope.userProfile = github.user;
-
-			$rootScope.tealightFilesFork = new Promise(function(resolve, reject) {
-			    // Check whether the tealight-files repo exists.
-			    var tf = github.getRepo(github.user.login, "tealight-files").then(function(e)
-			    {
-			        console.log("User already has tealight-files repo.");
-			        resolve();
-			    }).catch(function(e)
-			    {
-			        // If it doesn't, fork from tealight/tealight-files
-			        console.log("Could not find tealight-files repo. Forking");
-			        github.forkRepo("tealight", "tealight-files").then(function(e)
-			        {
-			            console.log("Started forking tealight-files");
-
-			            // Wait for fork to be completed
-			            waitForRepo("tealight", "tealight-files", 10).then(function()
-			            {
-			                console.log("tealight-files repo forked successfully.");
-			                resolve();
-			            }).catch(function(ev)
-			            {
-			                console.error("Timeout while waiting for tealight-files fork to become available");
-			                reject("Timeout while forking");
-			            });
-			        }, function(e)
-			        {
-			            console.error("Could not fork tealight-files", e);
-			            reject(e);
-			        });
-			    });
-			});
 
 			if (target != null) {
 				if (target == "")

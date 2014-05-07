@@ -26,6 +26,83 @@ define(["angular"], function() {
 		};
 	}])
 
+	.service('TealightFilesChecker', ["$rootScope", "$location", "github", function($rootScope, $location, github) {
+
+		$rootScope.$on("$routeChangeError", function(event, current, previous, rejection) {
+			if (rejection == "tealightFilesMissing") {
+				console.error("Tealight files repo is missing.");
+			}
+		});
+
+		function waitForRepo(repoOwner, repoName, timeoutSecs) {
+			return new Promise(function(resolve, reject){
+			    var recheckRepo = function()
+			    {
+			        // Every 1 sec, check whether repo exists
+			        var r = github.getRepo(repoOwner, repoName).then(function()
+			        {
+			            // It exists
+			            console.log("Repo created successfully");
+			            resolve();
+			        }).catch(function()
+			        {
+			            // If not, wait another second.
+			            console.log("Repo still doesn't exist. Waiting...");
+			            if (timeoutSecs > 0)
+			            {
+			            	// *Now* it exists.
+			                timeoutSecs -= 1;
+			                setTimeout(recheckRepo, 1000);
+			            }
+			            else
+			            {
+			                // Timeout expired
+			                console.error("Timeout expired waiting for repo fork.");
+			                reject("Timeout expired");
+			            }
+			        });
+			    }
+
+			    // Force this to take long enough for the dialog to appear.
+			    setTimeout(recheckRepo, 3000);
+			});
+		}
+
+		this.requireTealightFiles = function() {
+			return new Promise(function(resolve, reject) {
+				//$rootScope.userProfile ? Promise.resolve() : Promise.reject("tealightFilesMissing");
+				github.getRepo(github.user.login, "tealight-files").then(function(r) {
+					console.log("User already has tealight-files repo.")
+					resolve();
+				}).catch(function() {
+
+					// User does not already have tealight-files repo.
+			        // Fork from tealight/tealight-files
+			        console.log("Could not find tealight-files repo. Forking");
+			        github.forkRepo("tealight", "tealight-files").then(function(e)
+			        {
+			            console.log("Started forking tealight-files");
+
+			            // Wait for fork to be completed
+			            waitForRepo("tealight", "tealight-files", 10).then(function()
+			            {
+			                console.log("tealight-files repo forked successfully.");
+			                resolve();
+			            }).catch(function(ev)
+			            {
+			                console.error("Timeout while waiting for tealight-files fork to become available");
+			                reject("Timeout while forking");
+			            });
+			        }).catch(function(e)
+			        {
+			            console.error("Could not fork tealight-files", e);
+			            reject("tealightFilesMissing");
+			        });
+				});
+			});
+		};
+	}])
+
 	.service('Missions', ["$http", function($http) {
 
 		function parseMap(mapStr) {

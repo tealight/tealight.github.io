@@ -82,7 +82,7 @@ define([], function() {
 		if (this.state.score >= this.map.target)
 			bannerText = "You win!";
 		else if (this.state.moves >= this.map.limit)
-			bannerText = "Game over. You scored " + this.state.score;
+			bannerText = "Game over. You scored " + this.state.score + ".";
 
 		if (bannerText) {
 			this.ctx.globalAlpha = 0.8;
