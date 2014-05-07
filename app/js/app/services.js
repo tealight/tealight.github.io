@@ -49,7 +49,7 @@ define(["angular"], function() {
 			}
 
 			return {
-				size: [x,y],
+				size: [x+1,y],
 				walls: walls,
 				fruit: fruit
 			};

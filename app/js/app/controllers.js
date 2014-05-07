@@ -1,42 +1,6 @@
 'use strict';
 define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "app/modes/art"], function(require) {
-/*
-	var maps = {
-    	"apples": {
 
-            size: [30,20],
-
-    		walls: [
-                [0,10],
-                [1,10],
-                [2,10],
-                [3,10],
-                [4,10],
-                [5,10],
-                [6,10],
-            ],
-
-            limit: 200,
-
-            target: 1,
-
-            wallIcon: "foo",
-
-            fruitIcon: "bar",
-
-            initialState: {
-                fruit: [
-                    [3,7],
-                ],
-                pos: [0, 0],
-                angle: 0,
-                moves: 0,
-                score: 0,
-            }
-    	}
-    };
-
-*/
 	var Logo = require("app/modes/logo");
 	var Robot = require("app/modes/robot");
 	var Art = require("app/modes/art");

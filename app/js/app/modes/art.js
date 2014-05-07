@@ -1,23 +1,5 @@
 define([], function() {
 
-	var imageCache = {};
-
-	function getImgPromise(path) {
-		if (!imageCache[path]) {
-			console.log("Caching art img:", path);
-			imageCache[path] = new Promise(function(resolve, reject) {
-				var img = $("<img/>").attr("src", path);
-				img.on("load", function() {
-					resolve(img[0]);
-				})
-				img.on("error", function() {
-					reject("Image failed to load: " + path);
-				});
-			});
-		}
-
-		return imageCache[path];
-	}
 
 	var Art = function(canvas) {
 		this.canvas = canvas;
@@ -66,7 +48,7 @@ define([], function() {
 
 	Art.prototype.image = function(x,y,path) {
 
-		return getImgPromise("assets/images/" + path).then(function(i) {
+		return window.getImgPromise("assets/images/" + path).then(function(i) {
 			this.ctx.drawImage(i, x, y);
 		}.bind(this));
 
@@ -77,7 +59,7 @@ define([], function() {
 	}
 
 	Art.prototype.background = function(path) {
-		return getImgPromise("assets/backgrounds/" + path).then(function(i) {
+		return window.getImgPromise("assets/backgrounds/" + path).then(function(i) {
 			this.ctx.drawImage(i, 0, 0, i.width, i.height, 0, 0, this.canvas.width, this.canvas.height);
 		}.bind(this));
 	}

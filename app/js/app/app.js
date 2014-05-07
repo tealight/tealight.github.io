@@ -38,6 +38,28 @@ define(["foundation", "angular", "angular-route", "app/filters", "app/services",
 	    return c_value;
 	}
 
+	// Create completely global image cache mechanism. This is not the way this should be done, but it works.
+
+	var imageCache = {};
+
+	window.getImgPromise = function(path) {
+		if (!imageCache[path]) {
+			console.log("Caching image:", path);
+			imageCache[path] = new Promise(function(resolve, reject) {
+				var img = $("<img/>").attr("src", path);
+				img.on("load", function() {
+					resolve(img[0]);
+				})
+				img.on("error", function() {
+					reject("Image failed to load: " + path);
+				});
+			});
+		}
+
+		return imageCache[path];
+	};
+
+
 
 	// Declare app level module which depends on filters, and services
 	angular.module('tealight', [
