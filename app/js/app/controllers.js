@@ -141,23 +141,29 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 		// PRIVATE FUNCTIONS
 		///////////////////////////////////////////////
 
+		var robotKeyIsDown = false;
+		var robotSlowDelay = 200;
+		var robotFastDelay = 30;
+
 		function robotKeyDown(e) {
-			if (e.which == 17) {
+			if (e.which == 17 && !robotKeyIsDown) {
 				var now = new Date().getTime();
 				var timeStepsSoFar = (now - codeStartTime) / msPerTimeStep;
 				startTimeStep += timeStepsSoFar;
 				codeStartTime = now;
-				msPerTimeStep = 40;
+				msPerTimeStep = robotFastDelay;
+				robotKeyIsDown = true;
 			}
 		}
 
 		function robotKeyUp(e) {
-			if (e.which == 17) {
+			if (e.which == 17 && robotKeyIsDown) {
 				var now = new Date().getTime();
 				var timeStepsSoFar = (now - codeStartTime) / msPerTimeStep;
 				startTimeStep += timeStepsSoFar;
 				codeStartTime = now;
-				msPerTimeStep = 200;
+				msPerTimeStep = robotSlowDelay;
+				robotKeyIsDown = false;
 			}
 		}
 
@@ -182,7 +188,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 						map: Missions.missions[$scope.file.name.replace(".py","")],
 					}
 					modeObj = new Robot($('#canvas')[0], modeParams.map);
-					msPerTimeStep = 200;
+					msPerTimeStep = robotKeyIsDown ? robotFastDelay : robotSlowDelay;
 
 					$(document).on("keydown", robotKeyDown);
 					$(document).on("keyup", robotKeyUp);
@@ -408,12 +414,26 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 			if (rpcQueue.length > 0) {
 				var now = new Date().getTime();
 
-				var executeUpToTimeStep = msPerTimeStep > 0 ? startTimeStep + ((now - codeStartTime) / msPerTimeStep) : rpcQueue[rpcQueue.length - 1].timeStep;
+				if (codeStartTime == null) {
+					// codeStartTime has not been set. Set it.
+					codeStartTime = now;
+					console.log("Setting code start time")
+				} 
+
+				if (msPerTimeStep > 0) {
+					// We are doing slow replay. Work out which time step we're now up to.
+					var executeUpToTimeStep = startTimeStep + ((now - codeStartTime) / msPerTimeStep);
+				} else {
+					// We are executing at full speed.
+					var executeUpToTimeStep = rpcQueue[rpcQueue.length - 1].timeStep;
+				}
 
 				while(rpcQueue.length > 0 && rpcQueue[0].timeStep <= executeUpToTimeStep) {
 					var r = rpcQueue.shift();
 					var fn = r.fn;
 					var args = r.args;
+					var line = r.line;
+					var col = r.col;
 
 					var f = modeObj[fn] || globals[fn];
 					var result = f.apply(modeObj, args);
@@ -422,7 +442,11 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 						var after = function() {
 							setTimeout(rpcTick, 20);
 						}
-						result.then(after, after);
+						result.then(after).catch(function(msg) {
+							globals.python_error({message: msg, line: line, col: col});
+							$scope.stopCode();
+							after();
+						});
 						return;
 					}
 				}
@@ -451,10 +475,10 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 			$scope.stopCode();
 
 			rpcQueue = [];
-			codeStartTime = new Date().getTime();
-			startTimeStep = 0;
 
 			$scope.console = [];
+			codeStartTime = null;
+			startTimeStep = 0;
 
 			$scope.python_worker = new Worker("js/app/run_python.js");
 

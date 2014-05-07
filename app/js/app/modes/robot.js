@@ -83,7 +83,6 @@ define([], function() {
 	};
 
 	Robot.prototype.updateState = function(state) {
-		console.log("Updating:", state);
 		redraw(this.ctx, this.map, state);
 	};
 

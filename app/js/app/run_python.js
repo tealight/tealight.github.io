@@ -18,7 +18,7 @@ var rpcFlushTimeout = null;
 function rpc(fn, duration) {
 	var now = new Date().getTime();
 
-	rpcQueue.push({fn: fn, timeStep: rpcTimeStep, args: Array.prototype.slice.call(arguments, 2)});
+	rpcQueue.push({fn: fn, timeStep: rpcTimeStep, args: Array.prototype.slice.call(arguments, 2), line: Sk.currLineNo, col: Sk.currColNo});
 	rpcTimeStep += duration;
 
 	if (now - lastRpcFlush > 20) {
