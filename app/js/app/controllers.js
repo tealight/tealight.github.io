@@ -249,6 +249,14 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 			}
 		}
 
+		$scope.clearErrorWidget = function() {
+
+			if ($scope.errorWidget) {
+				$scope.errorWidget.clear();
+				$scope.errorWidget = null;
+			}
+		}
+
 		$scope.$watch("fileSelection", function(newVal, oldVal, scope) {
 
 			if(newVal === oldVal)
@@ -335,7 +343,8 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
 				consoleMessage("ERROR", msg + "\n");
 
-				$scope.editor.addLineClass(line-1, "background", "tealight-line-error")
+				//$scope.editor.addLineClass(line-1, "background", "tealight-line-error")
+				$scope.errorWidget = $scope.editor.addLineWidget(line-1, $("<div/>").addClass("tealight-line-error").html(msg)[0]);
 
 				$scope.stopCode();
 				$scope.$apply();
@@ -352,7 +361,8 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 				consoleMessage("ERROR", msg + "\n");
 				consoleMessage("ERROR", "See browser console for detailed (and largely unhelpful) error stack.\n")
 
-				$scope.editor.addLineClass(line-1, "background", "tealight-line-error")
+				//$scope.editor.addLineClass(line-1, "background", "tealight-line-error")
+				$scope.errorWidget = $scope.editor.addLineWidget(line-1, $("<div/>").addClass("tealight-line-error").html(msg)[0]);
 
 				$scope.stopCode();
 				$scope.$apply();
@@ -437,7 +447,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
 		$scope.runFile = function() {
 			$scope.stopCode();
-
+			$scope.clearErrorWidget();
 			rpcQueue = [];
 
 			$scope.console = [];

@@ -34,10 +34,7 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
 			    }
 			});
 
-			scope.editor.on("change", function() {
-				for(var i = 0; i < scope.editor.lineCount(); i++)
-					scope.editor.removeLineClass(i, "background", "tealight-line-error");
-			});
+			scope.editor.on("change", scope.clearErrorWidget);
 
 
 			scope.loadEditor.resolve();
