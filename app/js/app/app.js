@@ -73,27 +73,29 @@ define(["foundation", "angular", "angular-route", "app/filters", "app/services",
 	config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 
 	 
-	  function loginResolver(LoginChecker) {
-	  	return LoginChecker.requireLogin();
-	  }
-	  function tealightFilesResolver(TealightFilesChecker) {
-	  	return TealightFilesChecker.requireTealightFiles();
-	  }
-	  loginResolver['$inject'] = ['LoginChecker'];
+		function loginResolver(LoginChecker) {
+			return LoginChecker.requireLogin();
+		}
+		
+		function tealightFilesResolver(TealightFilesChecker) {
+			return TealightFilesChecker.requireTealightFiles();
+		}
 
-	  $routeProvider.when('/home', {templateUrl: 'partials/home.html', controller: 'HomeController'});
-	  $routeProvider.when('/about', {templateUrl: 'partials/about.html', controller: 'AboutController'});
+		loginResolver['$inject'] = ['LoginChecker'];
 
-	  $routeProvider.when("/code", {templateUrl: "partials/code.html", controller: "CodeController", resolve: { user: loginResolver, repo: tealightFilesResolver }});
-	  $routeProvider.when("/code/:mode", {templateUrl: "partials/mode.html", controller: "ModeController", resolve: { user: loginResolver, repo: tealightFilesResolver }});
-	  $routeProvider.when("/code/:mode/:fileName", {templateUrl: "partials/mode.html", controller: "ModeController", resolve: { user: loginResolver, repo: tealightFilesResolver }});
+		$routeProvider.when('/home', {templateUrl: 'partials/home.html', controller: 'HomeController'});
+		$routeProvider.when('/about', {templateUrl: 'partials/about.html', controller: 'AboutController'});
 
-	  $routeProvider.when("/login", {template: "", controller: "LoginController"});
-	  $routeProvider.when("/login_progress", {template: ""});
+		$routeProvider.when("/code", {templateUrl: "partials/code.html", controller: "CodeController", resolve: { user: loginResolver, repo: tealightFilesResolver }});
+		$routeProvider.when("/code/:mode", {templateUrl: "partials/mode.html", controller: "ModeController", resolve: { user: loginResolver, repo: tealightFilesResolver }});
+		$routeProvider.when("/code/:mode/:fileName", {templateUrl: "partials/mode.html", controller: "ModeController", resolve: { user: loginResolver, repo: tealightFilesResolver }});
 
-	  $routeProvider.otherwise({redirectTo: '/home'});
+		$routeProvider.when("/login", {template: "", controller: "LoginController"});
+		$routeProvider.when("/login_progress", {template: ""});
 
-	  $locationProvider.html5Mode(false).hashPrefix('!');
+		$routeProvider.otherwise({redirectTo: '/home'});
+
+		$locationProvider.html5Mode(false).hashPrefix('!');
 
 	}]).
 	run(["$location", "github", "$rootScope", function($location, github, $rootScope) {
