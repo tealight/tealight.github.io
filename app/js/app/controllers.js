@@ -110,7 +110,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 		var robotFastDelay = 30;
 
 		function robotKeyDown(e) {
-			if (e.which == 17 && !robotKeyIsDown) {
+			if (e.which == 17 && !robotKeyIsDown && codeStartTime) {
 				var now = new Date().getTime();
 				var timeStepsSoFar = (now - codeStartTime) / msPerTimeStep;
 				startTimeStep += timeStepsSoFar;
