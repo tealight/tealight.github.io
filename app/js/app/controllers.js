@@ -343,8 +343,10 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
 				consoleMessage("ERROR", msg + "\n");
 
-				//$scope.editor.addLineClass(line-1, "background", "tealight-line-error")
-				$scope.errorWidget = $scope.editor.addLineWidget(line-1, $("<div/>").addClass("tealight-line-error").html(msg)[0]);
+				if (e.line) {
+					//$scope.editor.addLineClass(line-1, "background", "tealight-line-error")
+					$scope.errorWidget = $scope.editor.addLineWidget(line-1, $("<div/>").addClass("tealight-line-error").html(msg)[0]);
+				}
 
 				$scope.stopCode();
 				$scope.$apply();
@@ -384,6 +386,9 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 		setTimeout(rpcTick, 20);
 
 		function rpcTick() {
+
+			if (rpcQueue.length > 10000)
+				globals.python_error({message: "RPC Queue Overflow"});
 
 			if (rpcQueue.length > 0) {
 				var now = new Date().getTime();
