@@ -89,12 +89,12 @@ function builtinRead(x) {
 	{
 		if (tealightModules[x] === null)
 		{
-			log('Replaying cached 404 for', x);
+			//log('Replaying cached 404 for', x);
 			throw "File not found";
 		}
 		else
 		{
-			log("Retrieved", x, "from cache");
+			//log("Retrieved", x, "from cache");
 			return tealightModules[x];
 		}
 	}
