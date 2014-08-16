@@ -465,6 +465,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
 			initMode();
 
+			modeParams.githubToken = github.token;
 
 			$scope.python_worker.addEventListener("message", onWorkerMessage);
 
