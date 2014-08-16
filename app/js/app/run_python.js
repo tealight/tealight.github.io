@@ -58,6 +58,9 @@ function onEvent(event, namedArgs) {
 					case "string":
 						args.push(Sk.builtin.str(v));
 						break;
+					case "object":
+						args.push(Sk.ffi.remapToPy(v)); //TODO: Might as well do this everywhere.
+						break;
 					default:
 						handleError(new Error("Invalid event argument provided to worker. Unsupported type: " + typeof(v)));
 
@@ -66,7 +69,7 @@ function onEvent(event, namedArgs) {
 						return;
 				}
 			} else {
-				log("Filling in missing argument with null. namedArgs =", namedArgs);
+				log("Filling in missing argument " + h.func_code.co_varnames[j] + " with null. namedArgs =", JSON.stringify(namedArgs));
 				args.push(null);
 			}
 		}
