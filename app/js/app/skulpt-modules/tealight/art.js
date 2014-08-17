@@ -44,8 +44,8 @@ var $builtinmodule = function(name)
     	rpc("clear", 1);
     });
 
-    mod.screenWidth = Sk.builtin.nmber(params.screenWidth || 0);
-    mod.screenHeight = Sk.builtin.nmber(params.screenHeight || 0);
+    mod.screen_width = Sk.builtin.nmber(params.screenWidth || 0);
+    mod.screen_height = Sk.builtin.nmber(params.screenHeight || 0);
 
     return mod;
 }
