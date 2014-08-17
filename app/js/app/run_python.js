@@ -125,6 +125,49 @@ function builtinRead(x) {
 			log("Caching 404 for", url);
 		}
 
+	} else if (x.indexOf("github") > -1) {
+
+		//console.warn("X: " + x);
+		var re = /\.\/github\/__init__.py/;
+
+		if (x.match(re)) {
+			return "";
+		}
+
+		re = /\.\/github\/([^\/]+)\/__init__.py/;
+
+		if (m = x.match(re)) {
+			//console.warn(m[1]);
+			return "";
+		}
+
+		re = /\.\/github\/([^\/]+)\/([^\/]+)\/__init__.py/;
+
+		if (m = x.match(re)) {
+			//console.warn(m[2])
+			return "";
+		}
+
+		re = /\.\/github\/([^\/]+)\/([^\/]+)\/([^\/]+).py/;
+		if (m = x.match(re)) {
+			var repoOwner = m[1];
+			var mode = m[2];
+			var file = m[3];
+
+			console.warn("GITHUB READ: "+ repoOwner + " : " + mode + " : " + file);
+
+			var http = new XMLHttpRequest();
+			var url = "https://api.github.com/repos/" + repoOwner + "/tealight-files/contents/" + mode + "/" + file + ".py?access_token=" + params.githubToken;
+
+			http.open("GET", url, false);
+			http.send(null);
+
+			if (http.status == 200) {
+				var py = atob(JSON.parse(http.responseText).content.replace("\n", ""));
+
+				return py;
+			}
+		}
 	}
 
 	throw "File not found: '" + x + "'";
