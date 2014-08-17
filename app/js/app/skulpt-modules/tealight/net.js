@@ -5,7 +5,7 @@ var $builtinmodule = function(name)
     var ws = null;
 
     mod.connect = new Sk.builtin.func(function(app_name) {
-    	ws = new WebSocket("ws://localhost:9090/" + Sk.ffi.remapToJs(app_name));
+    	ws = new WebSocket("ws://tealight-server.herokuapp.com/" + Sk.ffi.remapToJs(app_name));
 
     	ws.onopen = function() {
     		onEvent("connected", {});
