@@ -415,7 +415,12 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 					var col = r.col;
 
 					var f = modeObj[fn] || globals[fn];
-					var result = f.apply(modeObj, args);
+					try {
+						var result = f.apply(modeObj, args);
+					} catch (e) {
+						globals.python_error({message: e.message, line: line, col: col});
+						$scope.stopCode();
+					}
 
 					if (result instanceof Promise) {
 						var after = function() {

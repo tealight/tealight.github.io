@@ -45,23 +45,23 @@ define([], function() {
 	};
 		
 	Logo.prototype.penUp = function() {
-		console.log("Pen Up");
+		throw new Error("Function not implemented");
 	};
 		
 	Logo.prototype.penDown = function() {
-		console.log("Pen Down");
+		throw new Error("Function not implemented");
 	};
 		
 	Logo.prototype.showTurtle = function() {
-		console.log("Show Turtle");
+		throw new Error("Function not implemented");
 	};
 		
 	Logo.prototype.hideTurtle = function() {
-		console.log("Hide Turtle");
+		throw new Error("Function not implemented");
 	};
 		
 	Logo.prototype.speed = function(speed) {
-		console.log("Speed", speed);
+		throw new Error("Function not implemented");
 	};
 		
 	Logo.prototype.setColor = function(c) {
