@@ -21,10 +21,16 @@ var $builtinmodule = function(name)
 
     mod.send = new Sk.builtin.func(function(message) {
 
-    	var msg = Sk.ffi.remapToJs(message);
-    	var j = JSON.stringify(msg);
+    	if (ws.readyState != ws.OPEN) {
 
-    	ws.send(j);
+    		Sk.misceval.print_("Send failed: Network not connected\n");
+    	} else {
+
+	    	var msg = Sk.ffi.remapToJs(message);
+	    	var j = JSON.stringify(msg);
+
+	    	ws.send(j);
+    	}
     });
 
 	
