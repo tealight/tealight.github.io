@@ -21,6 +21,7 @@ define([], function() {
 
 	Art.prototype.setColor = function(c) {
 		this.ctx.strokeStyle = c;
+		this.ctx.fillStyle = c;
 	}
 
 	Art.prototype.line = function(x1,y1,x2,y2) {
