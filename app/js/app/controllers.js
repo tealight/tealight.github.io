@@ -342,19 +342,24 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 				var line = e.line;
 				var col = e.col;
 
-				var widgetLine = Math.min(line, $scope.editor.lineCount()-1);
+				if (line > $scope.editor.lineCount()) {
+					col = $scope.editor.getLine($scope.editor.lineCount()-1).length;
+				}
+
+				line = Math.min(line, $scope.editor.lineCount());
+
 
 				consoleMessage("ERROR", msg + "\n");
 
 				if (e.line) {
 					var p = "^\n";
 					for(var i = 0; i < col; i++)
-						p = " " + p;
+						p = "&nbsp;" + p;
 					$scope.editor.addLineClass(line-1, "wrap", "error-line")
-					$scope.errorWidget = $scope.editor.addLineWidget(widgetLine, 
+					$scope.errorWidget = $scope.editor.addLineWidget(line-1, 
 						$("<div/>").html(p).append(
 							$("<div/>").addClass("error-widget").html(msg)
-						)[0], {above:line == widgetLine, noHScroll: true});
+						)[0], {noHScroll: true});
 				}
 
 				$scope.stopCode();
