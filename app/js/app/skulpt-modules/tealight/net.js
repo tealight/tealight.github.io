@@ -19,7 +19,9 @@ var $builtinmodule = function(name)
     	};
     });
 
-    mod.send = new Sk.builtin.func(function(message) {
+    mod.send = new Sk.builtin.func(function(message, echo) {
+        if (!echo)
+            echo = {v: false};
 
     	if (ws.readyState != ws.OPEN) {
 
@@ -27,7 +29,11 @@ var $builtinmodule = function(name)
     	} else {
 
 	    	var msg = Sk.ffi.remapToJs(message);
-	    	var j = JSON.stringify(msg);
+
+	    	var j = JSON.stringify({ 
+                data: msg,
+                echo: echo.v
+            });
 
 	    	ws.send(j);
     	}
