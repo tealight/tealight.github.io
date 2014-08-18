@@ -549,6 +549,8 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 		$scope.$on("$destroy", function() {
 			$($window).off("keydown", window_keydown);
 			$($window).off("keyup", window_keyup);		
+
+			$scope.saveFile("Closing " + $scope.file.path);
 		})
 
 		$scope.$on("run-code", function() {
