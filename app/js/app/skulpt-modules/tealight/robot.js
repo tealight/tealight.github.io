@@ -106,6 +106,8 @@ var $builtinmodule = function(name)
             if (eatFruit(state))
                 state.score += 1;
 
+        } else {
+            Sk.misceval.print_("Line " + Sk.currLineNo + ": Can't move forward.\n");
         }
 
         state.moves += 1;
