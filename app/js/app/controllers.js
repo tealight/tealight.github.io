@@ -36,7 +36,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 	}])
 
 
-	.controller('ModeController', ["$scope", "$routeParams", "$rootScope", "$location", "Missions", "github", function($scope, $routeParams, $rootScope, $location, Missions, github) {
+	.controller('ModeController', ["$scope", "$routeParams", "$rootScope", "$location", "Missions", "github", "$window", function($scope, $routeParams, $rootScope, $location, Missions, github, $window) {
 		console.log("ModeController for user:", $rootScope.userProfile);
 
 		Missions.load.then(function(missions) {
@@ -487,6 +487,73 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 			rpcQueue = [];
 			$scope.running = false;
 		}
+
+		var pressedKeys = {};
+
+		var window_keydown = function(e) {
+
+			var ch = null
+			var val = null;
+
+			if (e.which >= 48 && e.which <= 57 ||
+				e.which >= 65 && e.which <= 90) {
+
+				val = e.which;
+				ch = String.fromCharCode(val);
+
+			} else if (e.which == 8 ||
+				       e.which == 9 ||
+				       e.which == 13 ||
+				       e.which >= 16 && e.which <= 18 ||
+				       e.which == 27 ||
+				       e.which == 32 ||
+				       e.which >= 37 && e.which <= 40 ||
+				       e.which == 46) {
+
+				val = e.which;
+			}
+			if (val) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				if (!pressedKeys[e.which]) 
+					sendEvent("keydown", {keychar: ch, keyval: val})
+
+			}
+			
+
+			pressedKeys[e.which] = true;
+		}
+
+		var window_keyup = function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			
+			delete pressedKeys[e.which];
+		}
+
+		$scope.$watch("running", function(newRunning) {
+			if (newRunning) {
+
+				$($window).on("keydown", window_keydown)
+				$($window).on("keyup", window_keyup)
+
+			} else {
+
+				$($window).off("keydown", window_keydown);
+				$($window).off("keyup", window_keyup);
+
+			}
+		})
+
+		$scope.$on("$destroy", function() {
+			$($window).off("keydown", window_keydown);
+			$($window).off("keyup", window_keyup);		
+		})
+
+		$scope.$on("run-code", function() {
+			$scope.runFile();
+		})
 
 	}])
 

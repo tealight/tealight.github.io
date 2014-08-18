@@ -30,7 +30,10 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
 			    	},
 			      'Shift-Tab': function(cm) {
 			        CodeMirror.commands.indentLess(cm)
-			    	}
+			    	},
+			      'Ctrl-Enter': function(cm) {
+			      	scope.$emit("run-code");
+			      }
 			    }
 			});
 
