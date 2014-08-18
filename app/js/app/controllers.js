@@ -248,6 +248,10 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
 		$scope.clearErrorWidget = function() {
 
+			$scope.editor.eachLine(function(h) {
+				$scope.editor.removeLineClass(h, "wrap");
+			});
+
 			if ($scope.errorWidget) {
 				$scope.errorWidget.clear();
 				$scope.errorWidget = null;
@@ -338,11 +342,19 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 				var line = e.line;
 				var col = e.col;
 
+				var widgetLine = Math.min(line, $scope.editor.lineCount()-1);
+
 				consoleMessage("ERROR", msg + "\n");
 
 				if (e.line) {
-					//$scope.editor.addLineClass(line-1, "background", "tealight-line-error")
-					$scope.errorWidget = $scope.editor.addLineWidget(line-1, $("<div/>").addClass("tealight-line-error").html(msg)[0]);
+					var p = "^\n";
+					for(var i = 0; i < col; i++)
+						p = " " + p;
+					$scope.editor.addLineClass(line-1, "wrap", "error-line")
+					$scope.errorWidget = $scope.editor.addLineWidget(widgetLine, 
+						$("<div/>").html(p).append(
+							$("<div/>").addClass("error-widget").html(msg)
+						)[0], {above:line == widgetLine, noHScroll: true});
 				}
 
 				$scope.stopCode();
@@ -360,8 +372,8 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 				consoleMessage("ERROR", msg + "\n");
 				consoleMessage("ERROR", "See browser console for detailed (and largely unhelpful) error stack.\n")
 
-				//$scope.editor.addLineClass(line-1, "background", "tealight-line-error")
-				$scope.errorWidget = $scope.editor.addLineWidget(line-1, $("<div/>").addClass("tealight-line-error").html(msg)[0]);
+				$scope.editor.addLineClass(line-1, "wrap", "error-line")
+				$scope.errorWidget = $scope.editor.addLineWidget(line-1, $("<div/>").addClass("error-widget").html(msg)[0], {above:true});
 
 				$scope.stopCode();
 				$scope.$apply();
