@@ -162,22 +162,32 @@ var $builtinmodule = function(name)
         var delta = angleToPosDelta(state.angle)
         var pos = [state.pos[0] + delta[0], state.pos[1] + delta[1]];
 
-        return Sk.builtin.str(getCellContent(map, state, pos));
+        var c = getCellContent(map, state, pos);
+        if(c)
+            return Sk.builtin.str(c);
+        else
+            return Sk.builtin.none.none$;
     });
 
     mod.left_side = new Sk.builtin.func(function() {
         var delta = angleToPosDelta(state.angle-1)
         var pos = [state.pos[0] + delta[0], state.pos[1] + delta[1]];
 
-        return Sk.builtin.str(getCellContent(map, state, pos));
-    });
+        var c = getCellContent(map, state, pos);
+        if(c)
+            return Sk.builtin.str(c);
+        else
+            return Sk.builtin.none.none$;    });
 
     mod.right_side = new Sk.builtin.func(function() {
         var delta = angleToPosDelta(state.angle+1)
         var pos = [state.pos[0] + delta[0], state.pos[1] + delta[1]];
 
-        return Sk.builtin.str(getCellContent(map, state, pos));
-    });
+        var c = getCellContent(map, state, pos);
+        if(c)
+            return Sk.builtin.str(c);
+        else
+            return Sk.builtin.none.none$;    });
 
 	
     return mod;
