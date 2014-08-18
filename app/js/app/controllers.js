@@ -583,7 +583,9 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 			$($window).off("keydown", window_keydown);
 			$($window).off("keyup", window_keyup);		
 
-			$scope.saveFile("Closing " + $scope.file.path);
+			if ($scope.file) {
+				$scope.saveFile("Closing " + $scope.file.path);
+			}
 		})
 
 		$scope.$on("run-code", function() {
