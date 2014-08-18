@@ -183,7 +183,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 			var offset = $(e.target).offset();
 			var x = e.pageX - offset.left;
 			var y = e.pageY - offset.top;
-			var button = ["left", "middle", "right"][e.button];
+			var button = [null,"left", "middle", "right"][e.which];
 			sendEvent(event, {x:x, y:y, button:button});    	
 		}
 
@@ -192,10 +192,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 		}
 
 		$scope.canvas_mousemove = function(e) {
-			var offset = $(e.target).offset();
-			var x = e.pageX - offset.left;
-			var y = e.pageY - offset.top;
-			sendEvent("mousemove", {x:x, y:y});    	
+			mouseEvent("mousemove", e);    	
 		}
 
 		$scope.canvas_mouseup = function(e) {
@@ -490,8 +487,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
 		var pressedKeys = {};
 
-		var window_keydown = function(e) {
-
+		var keyEvent = function(event, e) {
 			var ch = null
 			var val = null;
 
@@ -517,19 +513,24 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 				e.stopPropagation();
 
 				if (!pressedKeys[e.which]) 
-					sendEvent("keydown", {keychar: ch, keyval: val})
+					sendEvent(event, {keychar: ch, keyval: val})
 
 			}
-			
+
+		}
+
+		var window_keydown = function(e) {
+
+			keyEvent("keydown", e);
 
 			pressedKeys[e.which] = true;
 		}
 
 		var window_keyup = function(e) {
-			e.preventDefault();
-			e.stopPropagation();
-			
+
 			delete pressedKeys[e.which];
+
+			keyEvent("keyup", e);
 		}
 
 		$scope.$watch("running", function(newRunning) {

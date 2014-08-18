@@ -69,8 +69,8 @@ function onEvent(event, namedArgs) {
 						return;
 				}
 			} else {
-				log("Filling in missing argument " + h.func_code.co_varnames[j] + " with null. namedArgs =", JSON.stringify(namedArgs));
-				args.push(null);
+				log("Filling in missing argument " + h.func_code.co_varnames[j] + " with none. namedArgs =", JSON.stringify(namedArgs));
+				args.push(Sk.builtin.none.none$);
 			}
 		}
 		try {
