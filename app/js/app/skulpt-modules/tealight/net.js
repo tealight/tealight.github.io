@@ -4,11 +4,19 @@ var $builtinmodule = function(name)
 
     var ws = null;
 
+    var queue = [];
+
     mod.connect = new Sk.builtin.func(function(app_name) {
+        Sk.misceval.print_("[Connecting to tealight server...]\n");
     	ws = new WebSocket("ws://tealight-server.herokuapp.com/" + Sk.ffi.remapToJs(app_name));
 
     	ws.onopen = function() {
     		onEvent("connected", {});
+            Sk.misceval.print_("[Connected to tealight server]\n");
+
+            while(queue.length > 0) {
+                ws.send(queue.pop());
+            }
     	};
     	ws.onerror = function() {
     		handleError(new Sk.builtin.Exception("Tealight network error"));
@@ -23,20 +31,18 @@ var $builtinmodule = function(name)
         if (!echo)
             echo = {v: false};
 
-    	if (ws.readyState != ws.OPEN) {
+        var msg = Sk.ffi.remapToJs(message);
 
-    		Sk.misceval.print_("Send failed: Network not connected\n");
-    	} else {
+        var j = JSON.stringify({ 
+            data: msg,
+            echo: echo.v
+        });
 
-	    	var msg = Sk.ffi.remapToJs(message);
-
-	    	var j = JSON.stringify({ 
-                data: msg,
-                echo: echo.v
-            });
-
+    	if (ws.readyState != ws.OPEN)
+            queue.push(j);
+        else
 	    	ws.send(j);
-    	}
+    	
     });
 
 	

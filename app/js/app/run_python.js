@@ -191,7 +191,7 @@ function handleError(e) {
 
 registeredHandlers = false;
 function registerEventHandler(event, handler) {
-	stdout("[Registering " + event + " handler.]\n");
+	stdout("[Registering " + event + " handler]\n");
 	registeredHandlers = true;
 
 	if (!eventHandlers[event])
