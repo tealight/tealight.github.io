@@ -488,32 +488,47 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 		var pressedKeys = {};
 
 		var keyEvent = function(event, e) {
-			var ch = null
-			var val = null;
+			var k = null
 
 			if (e.which >= 48 && e.which <= 57 ||
 				e.which >= 65 && e.which <= 90) {
 
-				val = e.which;
-				ch = String.fromCharCode(val);
+				k = String.fromCharCode(e.which).toLowerCase();
 
-			} else if (e.which == 8 ||
-				       e.which == 9 ||
-				       e.which == 13 ||
-				       e.which >= 16 && e.which <= 18 ||
-				       e.which == 27 ||
-				       e.which == 32 ||
-				       e.which >= 37 && e.which <= 40 ||
-				       e.which == 46) {
-
-				val = e.which;
+			} else if (e.which == 8) {
+				k = "backspace";
+			} else if (e.which == 9) {
+				k = "tab";
+			} else if (e.which == 13) {
+				k = "return";
+			} else if (e.which == 16) {
+				k = "shift";
+			} else if (e.which == 17) {
+				k = "ctrl";
+			} else if (e.which == 18) {
+				k = "alt";
+			} else if (e.which == 27) {
+				k = "escape";
+			} else if (e.which == 32) {
+				k = "space";
+			} else if (e.which == 38) {
+				k = "up";
+			} else if (e.which == 40) {
+				k = "down";
+			} else if (e.which == 37) {
+				k = "left";
+			} else if (e.which == 39) {
+				k = "right";
+			} else if (e.which == 46) {
+				k = "delete";
 			}
-			if (val) {
+
+			if (k) {
 				e.preventDefault();
 				e.stopPropagation();
 
 				if (!pressedKeys[e.which]) 
-					sendEvent(event, {keychar: ch, keyval: val})
+					sendEvent(event, {key: k})
 
 			}
 
