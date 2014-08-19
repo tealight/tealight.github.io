@@ -134,6 +134,8 @@ define(["github_application", "angular"], function() {
                                    })).then(function(f) {
                 if (f.content)
                     f.decodedContent = atob(f.content.replace("\n", ""));
+                else
+                    f.decodedContent = ""
                 return f;
             });
         };
