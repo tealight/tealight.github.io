@@ -357,7 +357,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 						p = "&nbsp;" + p;
 					$scope.editor.addLineClass(line-1, "wrap", "error-line")
 					$scope.errorWidget = $scope.editor.addLineWidget(line-1, 
-						$("<div/>").html(p).append(
+						$("<div/>").html(col > 0 ? p : "").append(
 							$("<div/>").addClass("error-widget").html(msg)
 						)[0], {noHScroll: true});
 				}
@@ -371,14 +371,30 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 				var line = e.line;
 				var col = e.col;
 
+				if (line > $scope.editor.lineCount()) {
+					col = $scope.editor.getLine($scope.editor.lineCount()-1).length;
+				}
+
+				line = Math.min(line, $scope.editor.lineCount());
+
 				console.error("JS Error triggered by line", line, "and column", col);
 				console.error(stack);
 
 				consoleMessage("ERROR", msg + "\n");
 				consoleMessage("ERROR", "See browser console for detailed (and largely unhelpful) error stack.\n")
 
-				$scope.editor.addLineClass(line-1, "wrap", "error-line")
-				$scope.errorWidget = $scope.editor.addLineWidget(line-1, $("<div/>").addClass("error-widget").html(msg)[0], {above:true});
+				//$scope.editor.addLineClass(line-1, "wrap", "error-line")
+				//$scope.errorWidget = $scope.editor.addLineWidget(line-1, $("<div/>").addClass("error-widget").html(msg)[0], {above:true});
+				if (e.line) {
+					var p = "^\n";
+					for(var i = 0; i < col; i++)
+						p = "&nbsp;" + p;
+					$scope.editor.addLineClass(line-1, "wrap", "error-line")
+					$scope.errorWidget = $scope.editor.addLineWidget(line-1, 
+						$("<div/>").html( col > 0 ? p : "").append(
+							$("<div/>").addClass("error-widget").html(msg)
+						)[0], {noHScroll: true});
+				}
 
 				$scope.stopCode();
 				$scope.$apply();

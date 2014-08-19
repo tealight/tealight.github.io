@@ -7,6 +7,13 @@ var $builtinmodule = function(name)
     var queue = [];
 
     mod.connect = new Sk.builtin.func(function(app_name) {
+        Sk.builtin.pyCheckArgs("connect", arguments, 1, 1);
+        Sk.builtin.pyCheckType("app_name", "string", Sk.builtin.checkString(app_name));
+
+        if (ws != null) {
+            throw new Sk.builtin.Exception("Server already connected.");
+        }
+
         Sk.misceval.print_("[Connecting to tealight server...]\n");
     	ws = new WebSocket("ws://tealight-server.herokuapp.com/" + Sk.ffi.remapToJs(app_name));
 
@@ -28,8 +35,12 @@ var $builtinmodule = function(name)
     });
 
     mod.send = new Sk.builtin.func(function(message, echo) {
+        Sk.builtin.pyCheckArgs("send", arguments, 1, 2);
+
         if (!echo)
-            echo = {v: false};
+            echo = new Sk.builtin.bool(false);
+
+        Sk.builtin.pyCheckType("echo", "boolean", Sk.builtin.checkBool(echo));
 
         var msg = Sk.ffi.remapToJs(message);
 

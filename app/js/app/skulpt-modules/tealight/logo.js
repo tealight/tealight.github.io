@@ -2,13 +2,17 @@ var $builtinmodule = function(name)
 {
     var mod = {};
 	
-    mod.move = new Sk.builtin.func(function(distance) { // distance will be a Sk.builtin.nmbr    	
+    mod.move = new Sk.builtin.func(function(distance) {  	
     	Sk.builtin.pyCheckArgs("move", arguments, 1, 1);
     	Sk.builtin.pyCheckType("distance", "number", Sk.builtin.checkNumber(distance));
+
     	rpc("move", 1, distance.v);
     });
 	
 	mod.turn = new Sk.builtin.func(function(angle) {
+    	Sk.builtin.pyCheckArgs("turn", arguments, 1, 1);
+    	Sk.builtin.pyCheckType("angle", "number", Sk.builtin.checkNumber(angle));
+
 		rpc("turn", 1, angle.v);
 	});
 	
