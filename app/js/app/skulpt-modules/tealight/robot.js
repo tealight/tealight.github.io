@@ -126,7 +126,7 @@ var $builtinmodule = function(name)
         if (!map)
             throw new Error("Cannot turn - map not initialised.");
             
-        if (turn % 1 === 0)
+        if (steps % 1 === 0)
     	    throw new Sk.builtin.Exception("Need to turn by an integer number of steps");
 
         if (state.moves >= map.limit)
