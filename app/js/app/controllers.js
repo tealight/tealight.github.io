@@ -383,8 +383,6 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 				consoleMessage("ERROR", msg + "\n");
 				consoleMessage("ERROR", "See browser console for detailed (and largely unhelpful) error stack.\n")
 
-				//$scope.editor.addLineClass(line-1, "wrap", "error-line")
-				//$scope.errorWidget = $scope.editor.addLineWidget(line-1, $("<div/>").addClass("error-widget").html(msg)[0], {above:true});
 				if (e.line) {
 					var p = "^\n";
 					for(var i = 0; i < col; i++)
