@@ -90,6 +90,8 @@ var $builtinmodule = function(name)
     });
 */
     mod.move = new Sk.builtin.func(function() {
+        Sk.builtin.pyCheckArgs("move", arguments, 0, 0);
+        
     	if (!map)
     		throw new Error("Cannot move - map not initialised.");
 
@@ -118,8 +120,14 @@ var $builtinmodule = function(name)
     });
 
     mod.turn = new Sk.builtin.func(function(steps) {
+        Sk.builtin.pyCheckArgs("turn", arguments, 1, 1);
+    	Sk.builtin.pyCheckType("steps", "integer", Sk.builtin.checkInt(steps));
+    	
         if (!map)
             throw new Error("Cannot turn - map not initialised.");
+            
+        if (turn % 1 === 0)
+    	    throw new Sk.builtin.Exception("Need to turn by an integer number of steps");
 
         if (state.moves >= map.limit)
             throw new OutOfMovesError(state);
@@ -132,6 +140,8 @@ var $builtinmodule = function(name)
     });
 
     mod.look = new Sk.builtin.func(function() {
+        Sk.builtin.pyCheckArgs("look", arguments, 0, 0);
+        
         var delta = angleToPosDelta(state.angle)
 
         var pos = state.pos;
@@ -150,6 +160,8 @@ var $builtinmodule = function(name)
 
     // This differs from roboc, in that it only smells fruit. No-one ever used smell(Wall) anyway.
     mod.smell = new Sk.builtin.func(function() {
+        Sk.builtin.pyCheckArgs("smell", arguments, 0, 0);
+        
         var count = 0;
         for(var x = -2; x < 3; x++) {
             for(var y = -2; y < 3; y++) {
@@ -161,6 +173,8 @@ var $builtinmodule = function(name)
     });
 
     mod.touch = new Sk.builtin.func(function() {
+        Sk.builtin.pyCheckArgs("touch", arguments, 0, 0);
+        
         var delta = angleToPosDelta(state.angle)
         var pos = [state.pos[0] + delta[0], state.pos[1] + delta[1]];
 
@@ -172,6 +186,8 @@ var $builtinmodule = function(name)
     });
 
     mod.left_side = new Sk.builtin.func(function() {
+        Sk.builtin.pyCheckArgs("left_side", arguments, 0, 0);
+        
         var delta = angleToPosDelta(state.angle-1)
         var pos = [state.pos[0] + delta[0], state.pos[1] + delta[1]];
 
@@ -182,6 +198,8 @@ var $builtinmodule = function(name)
             return Sk.builtin.none.none$;    });
 
     mod.right_side = new Sk.builtin.func(function() {
+        Sk.builtin.pyCheckArgs("right_side", arguments, 0, 0);
+        
         var delta = angleToPosDelta(state.angle+1)
         var pos = [state.pos[0] + delta[0], state.pos[1] + delta[1]];
 
