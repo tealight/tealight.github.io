@@ -109,9 +109,88 @@ var $builtinmodule = function(name)
 
         // TODO: Check that every element of vertices is actually a 2-tuple.
 
-        var verts = Sk.ffi.remapToJs(vertices);
+        vertices = Sk.ffi.remapToJs(vertices);
+        x = x.v;
+        y = y.v;
 
-        // TODO: Return true if (x,y) is inside the polygon, otherwise false.
+        // Return true if (x,y) is inside the polygon, otherwise false.
+
+        // Test every edge of the polygon for intersection with the line of increasing x and constant y from (x,y)
+        // Intersection test should be inclusive of start point, and exclusive of end point.
+
+        var edges = [];
+        for (var i = 0; i < vertices.length; i++) {
+
+            var j = i + 1;
+
+            if (j == vertices.length)
+                j = 0;
+
+            if (vertices[i][0] <= vertices[j][0]) {
+                edges.push({
+                    start: { x: vertices[i][0],   y: vertices[i][1]   },
+                    end:   { x: vertices[j][0], y: vertices[j][1] },
+                });
+            } else {
+                edges.push({
+                    end:   { x: vertices[i][0],   y: vertices[i][1]   },
+                    start: { x: vertices[j][0], y: vertices[j][1] },
+                });
+            }
+        }
+
+        // Count the number of edges that intersect the line.
+        var crossedEdges = 0;
+
+        for (var i in edges) {
+            var e = edges[i];
+
+            //console.log("Testing line of y= " + y + " from (" + x + ", " + y + ") with edge from (" + e.start.x + "," + e.start.y + ") to (" + e.end.x + "," + e.end.y + ")");
+            
+            // Are our endpoints on opposite sides of the line?
+
+            if (e.start.y <= y && e.end.y > y ||
+                e.end.y <= y && e.start.y > y) {
+
+                //console.log("Edge crosses line.")
+
+                // This edge might cross the line. Find its intersection with the line
+
+                if (e.start.x == e.end.x) {
+
+                    //console.log("Edge is vertical")
+                    // The edge is vertical
+
+                    var xCrossing = e.start.x;
+
+                } else {
+
+                    var edgeGradient = (e.end.y - e.start.y) / (e.end.x - e.start.x);
+
+                    var edgeIntercept = e.end.y - edgeGradient * e.end.x;
+
+                    // Now we have y = edgeGradient*x_ + edgeIntercept Need x_
+
+                    var xCrossing = (y - edgeIntercept) / edgeGradient;
+
+                }
+
+                //console.log("Intersection of y= " + y + " from (" + x + ", " + y + ") with edge from (" + e.start.x + "," + e.start.y + ") to (" + e.end.x + "," + e.end.y + ") is at x=" + xCrossing);
+
+                if (xCrossing >= x) {
+                    crossedEdges++;
+
+                    //console.log("CROSSED EDGE")
+                }
+
+            } else {
+                // This edge doesn't cross the line. Do nothing.
+            }
+        }
+
+        //console.log("Crossed edges: " + crossedEdges)
+        // We are inside the polygon if we crossed an odd number of edges.
+        return crossedEdges % 2 == 1;
 
     })
 
