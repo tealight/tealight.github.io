@@ -97,8 +97,8 @@ div.content {
   margin: 10px 10%;
 }
 
-.scope-bg {border-left: 1px dotted #88f; /*background: #f9f;*/}
-/*.scope-bg-1 {background: #9f9;}
-.scope-bg-2 {background: #f99;}
-.scope-bg-3 {background: #9ff;}
-.scope-bg-4 {background: #ff9;}*/
+.cm-python-indent-guide {border-left: 1px dotted #88f; /*background: #f9f;*/}
+/*.cm-python-indent-guide-1 {background: #9f9;}
+.cm-python-indent-guide-2 {background: #f99;}
+.cm-python-indent-guide-3 {background: #9ff;}
+.cm-python-indent-guide-4 {background: #ff9;}*/
