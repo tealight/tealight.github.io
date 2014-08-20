@@ -202,7 +202,6 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
 
 			scope.editor.on("focus", function() {
 				scope.stopCode();
-				scope.$apply();
 			});
 
 			scope.$on("focusCodeEditor", function() {
@@ -238,7 +237,12 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
 					clearTimeout(scrollTimeout);
 
 					scrollTimeout = setTimeout(function() {
+						element.attr("unselectable", "on");
+						element.css("user-select", "none");
 						element.scrollTop(element[0].scrollHeight);
+
+						// TODO: Make the console selectable again.
+
 					}, 1);
 				}, true);
 			},
