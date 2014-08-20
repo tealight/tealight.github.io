@@ -83,9 +83,17 @@ var $builtinmodule = function(name)
         Sk.builtin.pyCheckArgs("polygon", arguments, 1, 1);
         Sk.builtin.pyCheckType("vertices", "list", Sk.builtin.checkSequence(vertices));
 
-        // TODO: Check that every element of vertices is actually a 2-tuple.
+        for (var i in vertices.v.length) {
+            var t = vertices.v[i];
+            Sk.builtin.pyCheckType("vertex", "tuple", Sk.builtin.checkSequence(t));
+        }
 
         var verts = Sk.ffi.remapToJs(vertices);
+
+        for (var i in verts) {
+            if (verts[i].length != 2)
+                throw new Sk.builtin.Exception("Vertices must specify exactly 2 coordinates");
+        }
 
         rpc("polygon", 1, verts);
     })
@@ -94,9 +102,17 @@ var $builtinmodule = function(name)
         Sk.builtin.pyCheckArgs("fill_polygon", arguments, 1, 1);
         Sk.builtin.pyCheckType("vertices", "list", Sk.builtin.checkSequence(vertices));
 
-        // TODO: Check that every element of vertices is actually a 2-tuple.
+        for (var i in vertices.v.length) {
+            var t = vertices.v[i];
+            Sk.builtin.pyCheckType("vertex", "tuple", Sk.builtin.checkSequence(t));
+        }
 
         var verts = Sk.ffi.remapToJs(vertices);
+
+        for (var i in verts) {
+            if (verts[i].length != 2)
+                throw new Sk.builtin.Exception("Vertices must specify exactly 2 coordinates");
+        }
 
         rpc("fillPolygon", 1, verts);
     })
@@ -107,11 +123,21 @@ var $builtinmodule = function(name)
         Sk.builtin.pyCheckType("y", "number", Sk.builtin.checkNumber(y));
         Sk.builtin.pyCheckType("vertices", "list", Sk.builtin.checkSequence(vertices));
 
-        // TODO: Check that every element of vertices is actually a 2-tuple.
+        for (var i in vertices.v.length) {
+            var t = vertices.v[i];
+            Sk.builtin.pyCheckType("vertex", "tuple", Sk.builtin.checkSequence(t));
+        }
 
         vertices = Sk.ffi.remapToJs(vertices);
+
+        for (var i in vertices) {
+            if (vertices[i].length != 2)
+                throw new Sk.builtin.Exception("Vertices must specify exactly 2 coordinates");
+        }
         x = x.v;
         y = y.v;
+
+        var debug = false;
 
         // Return true if (x,y) is inside the polygon, otherwise false.
 
@@ -145,20 +171,24 @@ var $builtinmodule = function(name)
         for (var i in edges) {
             var e = edges[i];
 
-            //console.log("Testing line of y= " + y + " from (" + x + ", " + y + ") with edge from (" + e.start.x + "," + e.start.y + ") to (" + e.end.x + "," + e.end.y + ")");
+            if (debug)
+                console.log("Testing line of y= " + y + " from (" + x + ", " + y + ") with edge from (" + e.start.x + "," + e.start.y + ") to (" + e.end.x + "," + e.end.y + ")");
             
             // Are our endpoints on opposite sides of the line?
+            // N.B. The inclusivity check here is switched depending on line direction. That works. Honest.
 
             if (e.start.y <= y && e.end.y > y ||
                 e.end.y <= y && e.start.y > y) {
 
-                //console.log("Edge crosses line.")
+                if (debug)
+                    console.log("Edge crosses line.")
 
                 // This edge might cross the line. Find its intersection with the line
 
                 if (e.start.x == e.end.x) {
 
-                    //console.log("Edge is vertical")
+                    if (debug)
+                        console.log("Edge is vertical")
                     // The edge is vertical
 
                     var xCrossing = e.start.x;
@@ -175,12 +205,14 @@ var $builtinmodule = function(name)
 
                 }
 
-                //console.log("Intersection of y= " + y + " from (" + x + ", " + y + ") with edge from (" + e.start.x + "," + e.start.y + ") to (" + e.end.x + "," + e.end.y + ") is at x=" + xCrossing);
+                if (debug)
+                    console.log("Intersection of y= " + y + " from (" + x + ", " + y + ") with edge from (" + e.start.x + "," + e.start.y + ") to (" + e.end.x + "," + e.end.y + ") is at x=" + xCrossing);
 
                 if (xCrossing >= x) {
                     crossedEdges++;
 
-                    //console.log("CROSSED EDGE")
+                    if (debug)
+                        console.log("CROSSED EDGE")
                 }
 
             } else {
@@ -188,7 +220,9 @@ var $builtinmodule = function(name)
             }
         }
 
-        //console.log("Crossed edges: " + crossedEdges)
+        if (debug)
+            console.log("Crossed edges: " + crossedEdges)
+
         // We are inside the polygon if we crossed an odd number of edges.
         return crossedEdges % 2 == 1;
 
