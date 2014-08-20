@@ -194,12 +194,21 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
 			    	},
 			      'Ctrl-Enter': function(cm) {
 			      	scope.$emit("run-code");
+			      	cm.getInputField().blur();
 			      }
 			    }
 			});
 
 			scope.editor.on("change", scope.clearErrorWidget);
 
+			scope.editor.on("focus", function() {
+				scope.stopCode();
+				scope.$apply();
+			});
+
+			scope.$on("focusCodeEditor", function() {
+				scope.editor.getInputField().focus();
+			});
 
 			scope.loadEditor.resolve();
 

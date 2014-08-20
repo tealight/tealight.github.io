@@ -514,6 +514,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 			}
 			rpcQueue = [];
 			$scope.running = false;
+			$scope.$broadcast("focusCodeEditor");
 		}
 
 		var pressedKeys = {};
@@ -604,6 +605,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
 		$scope.$on("run-code", function() {
 			$scope.runFile();
+			$scope.$apply();
 		})
 
 	}])
