@@ -64,7 +64,7 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
 			var li = cm.lineInfo(line);
 			var indent = indents[li.line];
 			var curScope = curScopes[curScopes.length - 1];
-			console.log(curScope);
+			//console.log(curScope);
 			if (indent > curScope) {
 				var coords = cm.charCoords({line:li.line, ch: indent}, "local");
 				var coords0 = cm.charCoords({line:0, ch: 0}, "local");
@@ -72,7 +72,7 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
 				curScopeBoxes.push({left: coords.left - coords0.left, top: coords.top - coords0.top, height: 0, level: curScopes.length-1});
 			} else {
 				while (indent < curScopes[curScopes.length - 1]) {
-					console.log("popping");
+					//console.log("popping");
 					scopeBoxes.push(curScopeBoxes.pop());
 					curScopes.pop();
 				}
