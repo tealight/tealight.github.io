@@ -40,39 +40,25 @@ function rpcFlush() {
 
 var eventHandlers = {};
 
-function onEvent(event, namedArgs) {
+function onEvent(event, args) {
 	var handlers = eventHandlers[event];
 
 	for(var i in handlers) {
 		var h  = handlers[i];
 
-		var args = [];
-		for(var j in h.func_code.co_varnames) {
-			var v = namedArgs[h.func_code.co_varnames[j]];
+		// Convert args to python objects
 
-			if (v != null) {
-				switch(typeof(v)) {
-					case "number":
-						args.push(Sk.builtin.nmber(v));
-						break;
-					case "string":
-						args.push(Sk.builtin.str(v));
-						break;
-					case "object":
-						args.push(Sk.ffi.remapToPy(v)); //TODO: Might as well do this everywhere.
-						break;
-					default:
-						handleError(new Error("Invalid event argument provided to worker. Unsupported type: " + typeof(v)));
-
-						// Everything will die now, so might as well return
-
-						return;
-				}
-			} else {
-				log("Filling in missing argument " + h.func_code.co_varnames[j] + " with none. namedArgs =", JSON.stringify(namedArgs));
-				args.push(Sk.builtin.none.none$);
-			}
+		for (var j in args) {
+			args[j] = Sk.ffi.remapToPy(args[j]);
 		}
+
+		// Remove any args not required by the handler function
+
+		var requiredArgCount = (h.func_code.co_varnames || []).length;
+		args.splice(requiredArgCount);
+
+		// Call the handler function.
+
 		try {
 			Sk.misceval.apply(h,undefined,undefined,undefined,args);			
 		} catch (e) {
@@ -243,7 +229,7 @@ self.onmessage = function(event) {
 						// Someone is trying to handle "frame" events, so make sure we generate them.
 
 						setInterval(function() {
-							onEvent("frame", {});
+							onEvent("frame", []);
 						}, 20); // 50 FPS
 					}
 				}
@@ -264,7 +250,7 @@ self.onmessage = function(event) {
 
 			break;
 		case "EVENT":
-			onEvent(event.data.event, event.data.namedArgs);
+			onEvent(event.data.event, event.data.args);
 			break;
 	}
 }

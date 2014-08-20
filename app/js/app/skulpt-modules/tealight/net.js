@@ -30,7 +30,7 @@ var $builtinmodule = function(name)
     		throw new Sk.builtin.Exception("Failed to connect to tealight server.");
     	};
     	ws.onmessage = function(e) {
-    		onEvent("message", {message: JSON.parse(e.data)})
+    		onEvent("message", [JSON.parse(e.data)])
     	};
     });
 

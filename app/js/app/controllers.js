@@ -173,9 +173,9 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 		// EVENT HANDLING STUFF
 		///////////////////////////////////////////////
 
-		function sendEvent(event, namedArgs) {
+		function sendEvent(event, args) {
 			if ($scope.python_worker) {
-				$scope.python_worker.postMessage({type:"EVENT", event: event, namedArgs: namedArgs});
+				$scope.python_worker.postMessage({type:"EVENT", event: event, args: args});
 			}    	
 		}
 
@@ -184,7 +184,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 			var x = e.pageX - offset.left;
 			var y = e.pageY - offset.top;
 			var button = [null,"left", "middle", "right"][e.which];
-			sendEvent(event, {x:x, y:y, button:button});    	
+			sendEvent(event, [x, y, button]);    	
 		}
 
 		$scope.canvas_mousedown = function(e) {
@@ -559,7 +559,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 				e.stopPropagation();
 
 				if (!pressedKeys[e.which]) 
-					sendEvent(event, {key: k})
+					sendEvent(event, [k])
 
 			}
 
