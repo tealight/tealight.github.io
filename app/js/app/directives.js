@@ -194,7 +194,6 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
 			    	},
 			      'Ctrl-Enter': function(cm) {
 			      	scope.$emit("run-code");
-			      	cm.getInputField().blur();
 			      }
 			    }
 			});
@@ -209,6 +208,10 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
 			scope.$on("focusCodeEditor", function() {
 				scope.editor.getInputField().focus();
 			});
+
+			scope.$on("blurCodeEditor", function() {
+				scope.editor.getInputField().blur();
+			})
 
 			scope.loadEditor.resolve();
 

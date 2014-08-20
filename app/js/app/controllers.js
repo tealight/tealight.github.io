@@ -486,6 +486,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 		$scope.runFile = function() {
 			$scope.stopCode();
 			$scope.clearErrorWidget();
+			$scope.$broadcast("blurCodeEditor");
 			rpcQueue = [];
 
 			$scope.console = [];
