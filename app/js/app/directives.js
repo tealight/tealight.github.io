@@ -90,7 +90,7 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
                     // If the chopped off line starts with an else or whatever,
                     // then we'll need to continue the block, so flip the sign.
                     // Otherwise, just copy the next line's indentation.
-                    if (/^\s*(else|elif|except|finally)\s*:/.test(nextLine))
+                    if (/^\s*(else|finally|elif\s.*|except(\s.*)?)\s*:/.test(nextLine))
                         indents[i] = null;
                     else
                         indents[i] = indents[i+1];
