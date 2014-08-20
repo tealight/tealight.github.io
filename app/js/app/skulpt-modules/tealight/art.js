@@ -79,6 +79,42 @@ var $builtinmodule = function(name)
     	rpc("clear", 1);
     });
 
+    mod.polygon = new Sk.builtin.func(function(vertices) {
+        Sk.builtin.pyCheckArgs("polygon", arguments, 1, 1);
+        Sk.builtin.pyCheckType("vertices", "list", Sk.builtin.checkSequence(vertices));
+
+        // TODO: Check that every element of vertices is actually a 2-tuple.
+
+        var verts = Sk.ffi.remapToJs(vertices);
+
+        rpc("polygon", 1, verts);
+    })
+
+    mod.fill_polygon = new Sk.builtin.func(function(vertices) {
+        Sk.builtin.pyCheckArgs("fill_polygon", arguments, 1, 1);
+        Sk.builtin.pyCheckType("vertices", "list", Sk.builtin.checkSequence(vertices));
+
+        // TODO: Check that every element of vertices is actually a 2-tuple.
+
+        var verts = Sk.ffi.remapToJs(vertices);
+
+        rpc("fillPolygon", 1, verts);
+    })
+
+    mod.test_polygon = new Sk.builtin.func(function(x,y, vertices) {
+        Sk.builtin.pyCheckArgs("test_polygon", arguments, 3, 3);
+        Sk.builtin.pyCheckType("x", "number", Sk.builtin.checkNumber(x));
+        Sk.builtin.pyCheckType("y", "number", Sk.builtin.checkNumber(y));
+        Sk.builtin.pyCheckType("vertices", "list", Sk.builtin.checkSequence(vertices));
+
+        // TODO: Check that every element of vertices is actually a 2-tuple.
+
+        var verts = Sk.ffi.remapToJs(vertices);
+
+        // TODO: Return true if (x,y) is inside the polygon, otherwise false.
+
+    })
+
     mod.screen_width = Sk.builtin.nmber(params.screenWidth || 0);
     mod.screen_height = Sk.builtin.nmber(params.screenHeight || 0);
 

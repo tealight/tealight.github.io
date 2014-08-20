@@ -65,5 +65,26 @@ define([], function() {
 		}.bind(this));
 	}
 
+	var poly = function(ctx, vertices) {
+		ctx.beginPath();
+		ctx.moveTo(vertices[0][0], vertices[0][1]);
+
+		for (var i = 1; i < vertices.length; i++) {
+			ctx.lineTo(vertices[i][0], vertices[i][1]);
+		}
+
+		ctx.closePath();
+	}
+
+	Art.prototype.polygon = function(vertices) {
+		poly(this.ctx, vertices)
+		this.ctx.stroke();
+	}
+
+	Art.prototype.fillPolygon = function(vertices) {
+		poly(this.ctx, vertices)
+		this.ctx.fill();
+	}
+
 	return Art;
 });
