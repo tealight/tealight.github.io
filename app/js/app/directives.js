@@ -5,6 +5,9 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
 
     (function(CodeMirror) {
 
+    var boxes = [];
+    var box_n = 0;
+
 	CodeMirror.defineOption("pythonIndentationGuides", false, function(cm, val, old) {
         if (old && old != CodeMirror.Init) {
             clearPythonIndendationGuides(cm);
@@ -25,6 +28,7 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
             if (/(^|\s)cm-python-indent-guide($|\s)/.test(node.className))
                 node.parentNode.removeChild(node);
         }
+        box_n = 0;
     }
 
     function createPythonIndendationGuides(cm) {
@@ -166,7 +170,14 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
 
         // Add boxes to cm.display.lineSpace, behind text and cursors, stretching all the way to the right.
         scopeBoxes.forEach(function(box) {
-            var elt = document.createElement("div");
+            var elt;
+            if (box_n < boxes.length) {
+                elt = boxes[box_n];
+                box_n++;
+            } else {
+                elt = document.createElement("div");
+                boxes.push(elt);
+            }
             elt.className = "cm-python-indent-guide cm-python-indent-guide-" + box.level;
             elt.setAttribute("data-level", box.level);
             elt.style.position = "absolute";
