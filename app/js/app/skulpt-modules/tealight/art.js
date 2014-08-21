@@ -23,7 +23,7 @@ var $builtinmodule = function(name)
         Sk.builtin.pyCheckArgs("line_width", arguments, 1, 1);
         Sk.builtin.pyCheckType("width", "number", Sk.builtin.checkNumber(width));
 
-        rpc("lineWidth", 1, width);
+        rpc("lineWidth", 1, width.v);
     });
 
     mod.spot = new Sk.builtin.func(function(x, y, radius) {
