@@ -224,7 +224,7 @@ var $builtinmodule = function(name)
             console.log("Crossed edges: " + crossedEdges)
 
         // We are inside the polygon if we crossed an odd number of edges.
-        return crossedEdges % 2 == 1;
+        return new Sk.builtin.bool(crossedEdges % 2 == 1);
 
     })
 
