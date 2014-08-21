@@ -76,6 +76,13 @@ var $builtinmodule = function(name)
     	rpc("text", 1, x.v, y.v, string.v);
     });
 
+    mod.font = new Sk.builtin.func(function(font) {
+        Sk.builtin.pyCheckArgs("font", arguments, 1, 1);
+        Sk.builtin.pyCheckType("font", "string", Sk.builtin.checkString(font));
+
+        rpc("font", 1, font.v);
+    });
+
     mod.background = new Sk.builtin.func(function(path) {
         Sk.builtin.pyCheckArgs("background", arguments, 1, 1);
         Sk.builtin.pyCheckType("path", "string", Sk.builtin.checkString(path));

@@ -63,6 +63,10 @@ define([], function() {
 		this.ctx.fillText(string, x, y);
 	}
 
+	Art.prototype.font = function(font) {
+		this.ctx.font = font;
+	}
+
 	Art.prototype.background = function(path) {
 		return window.getImgPromise("assets/backgrounds/" + path).then(function(i) {
 			this.ctx.drawImage(i, 0, 0, i.width, i.height, 0, 0, this.canvas.width, this.canvas.height);
