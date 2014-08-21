@@ -87,20 +87,22 @@ define([], function() {
 	}
 
 	Art.prototype.image = function(x,y,path) {
-        this.doOrQueue(function() {
-			if (path.indexOf("://") == -1)
-	            path = "assets/images/" + path
 
-	        var img = window.getImgPromise(path);
+		if (path.indexOf("://") == -1)
+            path = "assets/images/" + path
 
-	        if (img instanceof Promise) {
-				return img.then(function(i) {
-					this.ctx.drawImage(i, x, y);
-				}.bind(this));
-			} else {
+        var img = window.getImgPromise(path);
+
+        if (img instanceof Promise) {
+        	this.endBatch();
+			return img.then(function(i) {
+				this.ctx.drawImage(i, x, y);
+			}.bind(this));
+		} else {
+	        this.doOrQueue(function() {
 				this.ctx.drawImage(img, x, y);			
-			}
-		}.bind(this))
+			}.bind(this))
+		}
 	}
 
 	Art.prototype.text = function(x,y,string) {
@@ -116,14 +118,21 @@ define([], function() {
 	}
 
 	Art.prototype.background = function(path) {
-        this.doOrQueue(function() {
-			if (path.indexOf("://") == -1)
-	            path = "assets/backgrounds/" + path
+		if (path.indexOf("://") == -1)
+            path = "assets/backgrounds/" + path
 
-			return window.getImgPromise(path).then(function(i) {
+        var img = window.getImgPromise(path);
+
+        if (img instanceof Promise) {
+        	this.endBatch();
+			return img.then(function(i) {
 				this.ctx.drawImage(i, 0, 0, i.width, i.height, 0, 0, this.canvas.width, this.canvas.height);
 			}.bind(this));
-		}.bind(this))
+		} else {
+	        this.doOrQueue(function() {
+				this.ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, this.canvas.width, this.canvas.height);
+			}.bind(this))
+		}
 	}
 
 	Art.prototype.lineWidth = function(width) {
