@@ -337,6 +337,8 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 				$scope.stopCode();
 				$scope.$apply();
 			},
+			beginBatch: function() {},
+			endBatch: function() {},
 			python_error: function(e) {
 				var msg = e.message;
 				var line = e.line;

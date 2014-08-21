@@ -233,7 +233,9 @@ self.onmessage = function(event) {
 						// Someone is trying to handle "frame" events, so make sure we generate them.
 
 						setInterval(function() {
+							rpc("beginBatch", 0);
 							onEvent("frame", []);
+							rpc("endBatch",0);
 						}, 20); // 50 FPS
 					}
 				}
