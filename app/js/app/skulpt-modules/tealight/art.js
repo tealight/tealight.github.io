@@ -47,6 +47,16 @@ var $builtinmodule = function(name)
     	rpc("box", 1, x.v, y.v, width.v, height.v);
     });
 
+    mod.rectangle = new Sk.builtin.func(function(x, y, width, height) {
+        Sk.builtin.pyCheckArgs("rectangle", arguments, 4, 4);
+        Sk.builtin.pyCheckType("x", "number", Sk.builtin.checkNumber(x));
+        Sk.builtin.pyCheckType("y", "number", Sk.builtin.checkNumber(y));
+        Sk.builtin.pyCheckType("width", "number", Sk.builtin.checkNumber(width));
+        Sk.builtin.pyCheckType("height", "number", Sk.builtin.checkNumber(height));
+
+    	rpc("rectangle", 1, x.v, y.v, width.v, height.v);
+    });
+
     mod.image = new Sk.builtin.func(function(x, y, path) {
         Sk.builtin.pyCheckArgs("image", arguments, 3, 3);
         Sk.builtin.pyCheckType("x", "number", Sk.builtin.checkNumber(x));

@@ -47,6 +47,10 @@ define([], function() {
 		this.ctx.fillRect(x-0.5,y-0.5,width,height);
 	}
 
+	Art.prototype.rectangle = function(x,y,width,height) {
+		this.ctx.strokeRect(x-0.5,y-0.5,width,height);
+	}
+
 	Art.prototype.image = function(x,y,path) {
 
 		return window.getImgPromise("assets/images/" + path).then(function(i) {
