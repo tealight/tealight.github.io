@@ -210,6 +210,9 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
 
 			scope.editor.on("focus", function() {
 				scope.stopCode();
+                try {
+                    scope.$apply();
+                } catch {}
 			});
 
 			scope.$on("focusCodeEditor", function() {
