@@ -55,10 +55,15 @@ define([], function() {
         if (path.indexOf("://") == -1)
             path = "assets/images/" + path
 
-		return window.getImgPromise(path).then(function(i) {
-			this.ctx.drawImage(i, x, y);
-		}.bind(this));
+        var img = window.getImgPromise(path);
 
+        if (img instanceof Promise) {
+			return img.then(function(i) {
+				this.ctx.drawImage(i, x, y);
+			}.bind(this));
+		} else {
+			this.ctx.drawImage(img, x, y);			
+		}
 	}
 
 	Art.prototype.text = function(x,y,string) {

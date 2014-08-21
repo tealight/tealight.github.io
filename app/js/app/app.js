@@ -49,6 +49,7 @@ define(["foundation", "angular", "angular-route", "app/filters", "app/services",
 				var img = $("<img/>").attr("src", path);
 				img.on("load", function() {
 					resolve(img[0]);
+					imgCache[path] = img[0];
 				})
 				img.on("error", function() {
 					reject("Image failed to load: " + path);
