@@ -7,12 +7,12 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
         if (old && old != CodeMirror.Init) {
             clearPythonIndendationGuides(cm);
             cm.off("update", refreshPythonIndendationGuides);
-            cm.off("change", refreshPythonIndendationGuides);
+            cm.off("cursorActivity", refreshPythonIndendationGuides);
         }
         if (val) {
             createPythonIndendationGuides(cm);
             cm.on("update", refreshPythonIndendationGuides);
-            cm.on("change", refreshPythonIndendationGuides);
+            cm.on("cursorActivity", refreshPythonIndendationGuides);
         }
     });
 
@@ -30,35 +30,43 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
         var indents = [];
         var parens = 0;
         var ml_string = false;
+        var cursorPos = cm.getCursor();
         cm.eachLine(function(line) {
-            if (/^\s*$/.test(line.text)) {
-                // Empty lines don't contribute to indentation changes
-                indents.push(null);
-            } else {
-                if (parens > 0 || ml_string) {
-                    // If we have open parentheses or are in a """ string, use the previous line's indentation
-                    indents.push(indents[indents.length-1]);
-                } else {
-                    // Indent by the number of spaces at the start (accounts for tabs)
-                    indents.push(CodeMirror.countColumn(line.text, null, cm.getOption("tabSize")));
-                }
+            var text = line.text;
+            // Replace strings with "" (i.e. clear strings)
+            text = text.replace(/"([^"\\]*(\\.[^"\\]*)*)"/g, '""')
+            // Remove text after comments
+            text = text.replace(/#.*/,"#");
 
-                // See (or rather, approximate) if there are any open parentheses
-                // or """ strings.
-                //
-                // This has lots of edge cases that won't work (in particular,
-                // stuff inside strings), but it's close enough without having to
-                // write a full python lexer.
-                var text = line.text.replace(/#.*/,"");
-                if (ml_string) {
-                    ml_string = ((text.match(/"""/g) || []).length % 2 === 0)
+            if (parens > 0 || ml_string) {
+                // If we have open parentheses or are in a """ string, use the previous line's indentation
+                indents.push(indents[indents.length-1]);
+            } else if (/^\s*$/.test(text)) {
+                if (!cm.somethingSelected() && cursorPos.line == cm.lineInfo(line).line) {
+                    // Empty lines with the cursor in them are indented to the position of the cursor
+                    indents.push(cursorPos.ch);
                 } else {
-                    ml_string = ((text.match(/"""/g) || []).length % 2 === 1)
+                    // Empty lines don't contribute to indentation changes
+                    indents.push(null);
                 }
-                if (!ml_string) {
-                    parens += (text.match(/\(|\[|\{/g) || []).length
-                    parens -= (text.match(/\)|\]|\}/g) || []).length
-                }
+            } else {
+                // Indent by the number of spaces at the start (accounts for tabs)
+                indents.push(CodeMirror.countColumn(text, null, cm.getOption("tabSize")));
+            }
+
+            // See (or rather, approximate) if there are any open parentheses
+            // or """ strings.
+            //
+            // This has lots of edge cases that won't work, but it's close
+            // enough without having to write a full python lexer.
+            if (ml_string) {
+                ml_string = ((text.match(/"""/g) || []).length % 2 === 0)
+            } else {
+                ml_string = ((text.match(/"""/g) || []).length % 2 === 1)
+            }
+            if (!ml_string) {
+                parens += (text.match(/\(|\[|\{/g) || []).length
+                parens -= (text.match(/\)|\]|\}/g) || []).length
             }
         });
 
@@ -90,7 +98,7 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
                     // If the chopped off line starts with an else or whatever,
                     // then we'll need to continue the block, so flip the sign.
                     // Otherwise, just copy the next line's indentation.
-                    if (/^\s*(else|elif|except|finally)\s*:/.test(nextLine))
+                    if (/^\s*(else|finally|elif\s.*|except(\s.*)?)\s*:/.test(nextLine))
                         indents[i] = null;
                     else
                         indents[i] = indents[i+1];
