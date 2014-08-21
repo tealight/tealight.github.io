@@ -3,6 +3,8 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
 
 	/* CodeMirror addins */
 
+    (function(CodeMirror) {
+
 	CodeMirror.defineOption("pythonIndentationGuides", false, function(cm, val, old) {
         if (old && old != CodeMirror.Init) {
             clearPythonIndendationGuides(cm);
@@ -181,6 +183,8 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
         clearPythonIndendationGuides(cm);
         createPythonIndendationGuides(cm);
     }
+
+    })(CodeMirror);
 
 
 	/* Directives */
