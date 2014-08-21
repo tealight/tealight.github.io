@@ -48,8 +48,8 @@ define(["foundation", "angular", "angular-route", "app/filters", "app/services",
 			imageCache[path] = new Promise(function(resolve, reject) {
 				var img = $("<img/>").attr("src", path);
 				img.on("load", function() {
+					imageCache[path] = img[0];
 					resolve(img[0]);
-					imgCache[path] = img[0];
 				})
 				img.on("error", function() {
 					reject("Image failed to load: " + path);
