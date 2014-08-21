@@ -132,7 +132,9 @@ define(["github_application", "angular"], function() {
                                        type: "GET",
                                        cache: false
                                    })).then(function(f) {
-                f.git_url = f.git_url.replace("api./", "api.github.com/");
+                if (f.git_url) {
+                    f.git_url = f.git_url.replace("api./", "api.github.com/");
+                }
                 if (f.content)
                     f.decodedContent = atob(f.content.replace("\n", ""));
                 else
