@@ -78,6 +78,10 @@ define([], function() {
 		}.bind(this));
 	}
 
+	Art.prototype.lineWidth = function(width) {
+		this.ctx.lineWidth = width;
+	}
+
 	var poly = function(ctx, vertices) {
 		ctx.beginPath();
 		ctx.moveTo(vertices[0][0], vertices[0][1]);

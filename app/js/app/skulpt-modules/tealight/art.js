@@ -19,6 +19,13 @@ var $builtinmodule = function(name)
     	rpc("line", 1, x1.v, y1.v, x2.v, y2.v);
     });
 
+    mod.line_width = new Sk.builtin.func(function(width) {
+        Sk.builtin.pyCheckArgs("line_width", arguments, 1, 1);
+        Sk.builtin.pyCheckType("width", "number", Sk.builtin.checkNumber(width));
+
+        rpc("lineWidth", 1, width);
+    });
+
     mod.spot = new Sk.builtin.func(function(x, y, radius) {
         Sk.builtin.pyCheckArgs("spot", arguments, 3, 3);
         Sk.builtin.pyCheckType("x", "number", Sk.builtin.checkNumber(x));
