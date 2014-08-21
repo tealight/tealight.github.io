@@ -118,25 +118,39 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
         var scopeBoxes = [];
         var curScopes = [0];
         var curScopeBoxes = [];
-        var line0 = cm.heightAtLine(0);
-        cm.eachLine(function(line) {
-            var li = cm.lineInfo(line);
-            var indent = indents[li.line];
+
+        // Positions are relative to the first line in the viewport
+        var line0 = cm.heightAtLine(cm.getViewport().from);
+
+        // Start at the first un-indented line before the viewport
+        var start_line = cm.getViewport().from;
+        while (indents[start_line] != 0 && start_line > 0) {
+            --start_line;
+        }
+        // Start at the first un-indented line after the viewport
+        var end_line = cm.getViewport().to;
+        while (indents[end_line] != 0 && end_line < cm.lastLine()) {
+            ++end_line;
+        }
+
+        for (var line = start_line; line <= end_line; ++line) {
+            var indent = indents[line];
             var curScope = curScopes[curScopes.length - 1];
+            var heightHere = cm.heightAtLine(line);
             if (indent > curScope) {
                 // If the indentation level increased, that means we're starting a new box
                 curScopes.push(indent);
-                curScopeBoxes.push({left: cm.defaultCharWidth()*indent, top: cm.heightAtLine(li.line) - line0, level: curScopes.length-1});
+                curScopeBoxes.push({left: cm.defaultCharWidth()*indent, top: heightHere - line0, level: curScopes.length-1});
             } else {
                 // If the indentation level dropped, that means we're closing all boxes with higher indent level
                 while (indent < curScopes[curScopes.length - 1]) {
                     var box = curScopeBoxes.pop();
-                    box.bottom = cm.heightAtLine(li.line) - line0;
+                    box.bottom = heightHere - line0;
                     scopeBoxes.push(box);
                     curScopes.pop();
                 }
             }
-        });
+        }
         // Close any left-over boxes
         while (curScopeBoxes.length) {
             var box = curScopeBoxes.pop();
