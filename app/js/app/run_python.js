@@ -166,6 +166,10 @@ function stdout(text) {
 function handleError(e) {
 	eventHandlers = {};
 
+	try {
+		stdout("Error in " + e.args.v[1].v + "\n")
+	} catch (e) {}
+
 	if (e instanceof Sk.builtin.Exception) {
 		rpc("python_error", 0, {message: e.toString(), line: e.lineno == "<unknown>" ? null : e.lineno, col: e.colno == "<unknown>" ? null : e.colno});
 	} else if (e instanceof Error) {
