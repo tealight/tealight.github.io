@@ -212,7 +212,7 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
 				scope.stopCode();
                 try {
                     scope.$apply();
-                } catch {}
+                } catch (e) {}
 			});
 
 			scope.$on("focusCodeEditor", function() {
