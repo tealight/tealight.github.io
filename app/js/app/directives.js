@@ -231,7 +231,11 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
 			    	},
 			      'Ctrl-Enter': function(cm) {
 			      	scope.$emit("run-code");
+			      },
+			      'Ctrl-S': function(cm) {
+			      	scope.$emit("save-code");
 			      }
+
 			    }
 			});
 

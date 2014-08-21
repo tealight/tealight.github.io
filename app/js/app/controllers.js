@@ -610,7 +610,9 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 			$scope.runFile();
 			$scope.$apply();
 		})
-
+		$scope.$on("save-code", function() {
+			$scope.saveFile("Saving " + $scope.file.path);
+		})
 	}])
 
 	.controller("LoginController", ["$window", "$location", "github", function($window, $location, github) {
