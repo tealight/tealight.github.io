@@ -60,10 +60,13 @@ function onEvent(event, args) {
 		// Call the handler function.
 
 		try {
+			rpc("beginBatch", 0);
 			Sk.misceval.apply(h,undefined,undefined,undefined,args);			
 		} catch (e) {
 			handleError(e);
 			return;
+		} finally {
+			rpc("endBatch", 0);
 		}
 	}
 }
@@ -233,9 +236,7 @@ self.onmessage = function(event) {
 						// Someone is trying to handle "frame" events, so make sure we generate them.
 
 						setInterval(function() {
-							rpc("beginBatch", 0);
 							onEvent("frame", []);
-							rpc("endBatch",0);
 						}, 20); // 50 FPS
 					}
 				}
