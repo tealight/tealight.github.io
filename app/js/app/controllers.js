@@ -36,6 +36,17 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
 	.controller('GalleryController', ["$scope", function($scope) {
 		$scope.panels = [{
+			title: "Featured Demos",
+			featured: [{
+				title: "Triangles",
+				user: "LeszekSwirski",
+				path: "art/triangle_anim.py",
+				authors: [{
+					name: "Leszek Swirski",
+					username: "LeszekSwirski",
+				}]
+			}]
+		}, {
 			title: "Sutton Trust Summer School 2014",
 			featured: [{
 				title: "Connect 4",
