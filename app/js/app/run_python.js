@@ -146,8 +146,10 @@ function builtinRead(x) {
 			console.warn("GITHUB READ: "+ repoOwner + " : " + mode + " : " + file);
 
 			var http = new XMLHttpRequest();
-			var url = "https://api.github.com/repos/" + repoOwner + "/tealight-files/contents/" + mode + "/" + file + ".py?access_token=" + params.githubToken + "&cache_bust=" + Date.now();
-
+			var url = "https://api.github.com/repos/" + repoOwner + "/tealight-files/contents/" + mode + "/" + file + ".py?cache_bust=" + Date.now();
+			if (params.githubToken) {
+				url += "&access_token=" + params.githubToken;
+			}
 			http.open("GET", url, false);
 			http.send(null);
 

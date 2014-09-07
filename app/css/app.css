@@ -102,3 +102,12 @@ div.content {
 .cm-python-indent-guide-2 {background: #f99;}
 .cm-python-indent-guide-3 {background: #9ff;}
 .cm-python-indent-guide-4 {background: #ff9;}*/
+
+.gallery-box {
+  width: 100%;
+  cursor: pointer;
+}
+
+.authors {
+  font-style: italic;
+}

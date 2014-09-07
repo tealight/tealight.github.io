@@ -25,8 +25,11 @@ var $builtinmodule = function(name)
 
     mod.github_load = new Sk.builtin.func(function(repo_owner, mode, file) {
         var http = new XMLHttpRequest();
-        var url = "https://api.github.com/repos/" + repo_owner.v + "/tealight-files/contents/" + mode.v + "/" + file.v + ".py?access_token=" + params.githubToken;
+        var url = "https://api.github.com/repos/" + repo_owner.v + "/tealight-files/contents/" + mode.v + "/" + file.v + ".py?cache_bust=" + Date.now();
 
+        if (params.githubToken) {
+            url += "&params=" + params.githubToken;
+        }
         http.open("GET", url, false);
         http.send(null);
 

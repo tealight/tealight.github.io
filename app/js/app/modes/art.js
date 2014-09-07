@@ -22,6 +22,31 @@ define([], function() {
 		this.batch = [];
 	}
 
+	Art.prototype.setMinScreenSize = function(width, height) {
+
+		if ($(this.canvas).width() >= width && $(this.canvas).height() >= height)
+			return;
+		
+		var aspect = this.canvas.width / this.canvas.height;
+		var requestedAspect = width / height;
+
+		if (aspect > requestedAspect) {
+			this.canvas.height = height;
+			this.canvas.width = height  * aspect;
+			this.ctx.translate((this.canvas.width - width) / 2,0)
+			this.inputTranslateX = function(x) {
+				return x - (this.canvas.width - width) / 2;
+			}
+		} else {
+			this.canvas.width = width;
+			this.canvas.height = width / aspect;
+			this.ctx.translate(0, (this.canvas.height - height) / 2)
+			this.inputTranslateY = function(y) {
+				return y - (this.canvas.height - height) / 2;
+			}
+		}
+	}
+
 	Art.prototype.beginBatch = function() {
 		this.batching = true;
 	}

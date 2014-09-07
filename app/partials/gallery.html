@@ -1,0 +1,27 @@
+<div class="row">
+    <div class="small-12 columns">
+        <h1>Tealight Gallery</h1>
+    </div>
+</div>
+<div class="row" ng-repeat="panel in panels">
+    <div class="small-12 columns">
+        <div class="panel callout">
+            <h3>{{panel.title}}</h3>
+        </div>
+        <ul class="small-block-grid-3">
+            <li ng-repeat="feature in panel.featured"> 
+                <a ng-href="#!/gallery/{{feature.user}}/{{feature.path}}{{(feature.minWidth && feature.minHeight) ? ('?minWidth=' + feature.minWidth + '&minHeight=' + feature.minHeight) : ''}}" class="th panel gallery-box">
+                    <h4>{{feature.title}}</h4>
+                    <h6 class="authors">
+                        <span ng-repeat="a in feature.authors">{{$first ? '' : ($last ? ' and ' : ', ')}}{{a.name}}</span>
+                    </h6>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="row" ng-repeat="panel in panels">
+    <div class="small-12 columns text-center">
+        If you would like to have your program displayed here, please get in touch!
+    </div>
+</div>

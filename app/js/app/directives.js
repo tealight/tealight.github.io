@@ -214,6 +214,7 @@ define(["angular", "app/filters", "codemirrorPython"], function() {
 
 			scope.editor = CodeMirror(element[0],
 			{
+                readOnly: scope.gallery,
 				mode: "python",
 				lineNumbers: true,
 				theme: "neat",

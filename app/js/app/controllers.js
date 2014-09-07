@@ -30,11 +30,146 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
 	}])
 
-
 	.controller('CodeController', ["$rootScope", function($rootScope) {
 		console.log("CodeController for user:", $rootScope.userProfile);
 	}])
 
+	.controller('GalleryController', ["$scope", function($scope) {
+		$scope.panels = [{
+			title: "Sutton Trust Summer School 2014",
+			featured: [{
+				title: "Connect 4",
+				subtitle: "Group 1",
+				user: "chandler6",
+				path: "art/connectfourmain.py",
+				minWidth: 900,
+				minHeight: 900,
+				authors: [{
+					name: "Chandler Goddard",
+					username: "chandler6",
+				}, {
+					name: "Chloe Ayoub",
+					username: "chloea",
+				}, {
+					name: "Maurice Yap",
+					username: "mauriceyap",
+				}, {
+					name: "Sohraab Sayed",
+					username: "v3506",
+				}],
+			},{
+				title: "Memory Game",
+				subtitle: "Group 2",
+				user: "shivam1023",
+				path: "art/MemoryGame.py",
+				minWidth: 850,
+				minHeight: 1000,
+				authors: [{
+					name: "Shivam Shah",
+					username: "shivam1023",
+				}, {
+					name: "Feras Al-Hamadani",
+					username: "feras96",
+				}, {
+					name: "Jordan Clark",
+					username: "jordanc44",
+				}, {
+					name: "Saxon Zerbino",
+					username: "lordofsax",
+				}],
+			},{
+				title: "Connect 4",
+				subtitle: "Group 3",
+				user: "griffithsben",
+				path: "art/Connect4Main.py",
+				minWidth: 900,
+				minHeight: 900,
+				authors: [{
+					name: "Ben Griffiths",
+					username: "griffithsben",
+				}, {
+					name: "Andrew Wells",
+					username: "andyandywells",
+				}, {
+					name: "Basil Regi",
+					username: "basregi",
+				}, {
+					name: "Nicholas McAlpin",
+					username: "nickmcalpin",
+				}],
+			},{
+				title: "dinOTHELLOsaurus",
+				subtitle: "Group 4",
+				user: "anthonyajsmith",
+				path: "art/othello.py",
+				minWidth: 1200,
+				minHeight: 850,
+				authors: [{
+					name: "Anthony Smith",
+					username: "anthonyajsmith",
+				}, {
+					name: "Ahartisha Selakanabarajah",
+					username: "arty001",
+				}, {
+					name: "Louise Truong",
+					username: "louisahoa",
+				}, {
+					name: "Ronan Kelly",
+					username: "ronanmtkelly",
+				}],
+			},{
+				title: "Minesweeper",
+				subtitle: "Group 5",
+				user: "davidsamueljones",
+				path: "art/Minesweeper.py",
+				minWidth: 600,
+				minHeight: 1000,
+				authors: [{
+					name: "David Jones",
+					username: "davidsamueljones",
+				}, {
+					name: "Christopher Davies",
+					username: "v3520",
+				}, {
+					name: "Elizabeth Tebbutt",
+					username: "lizztebbutt",
+				}, {
+					name: "Emrecan Kayran",
+					username: "emrecan-k",
+				}],
+			},{
+				title: "Racetrack",
+				subtitle: "Group 6",
+				user: "a-l-williams",
+				path: "art/project.py",
+				minWidth: 1000,
+				minHeight: 1000,
+				authors: [{
+					name: "Adam Williams",
+					username: "a-l-williams",
+				}, {
+					name: "Matthew Brooks",
+					username: "lordvile018",
+				}, {
+					name: "Calin Tataru",
+					username: "calintat",
+				}],
+			},{
+				title: "Racetrack",
+				subtitle: "Group 7",
+				user: "v3491",
+				path: "art/racetrack.py",
+				authors: [{
+					name: "George Andersen",
+					username: "v3491",
+				}, {
+					name: "Callum Ryan",
+					username: "c-ryan747",
+				}],
+			}],
+		}];
+
+	}])
 
 	.controller('ModeController', ["$scope", "$routeParams", "$rootScope", "$location", "Missions", "github", "$window", function($scope, $routeParams, $rootScope, $location, Missions, github, $window) {
 		console.log("ModeController for user:", $rootScope.userProfile);
@@ -46,6 +181,12 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 		///////////////////////////////////////////////
 		// INITIALISATION
 		///////////////////////////////////////////////
+
+		console.debug("Route params:", $routeParams);
+
+		// TODO: Need to think about rate limiting for gallery mode: https://developer.github.com/v3/#rate-limiting
+
+		$scope.gallery = !!$routeParams.username;
 
 		$scope.mode = $routeParams.mode;
 
@@ -70,7 +211,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
 				$scope.editor.setValue("Loading " + filePath + "...");
 
-				return github.getFile(github.user.login, "tealight-files", filePath).then(function(f) {
+				return github.getFile($routeParams.username || github.user.login, "tealight-files", filePath).then(function(f) {
 					console.log("Loaded", f.name);
 					$scope.editor.setValue(f.decodedContent);
 					$scope.file = f;
@@ -161,10 +302,29 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 				case "art":
 					modeObj = new Art($('#canvas')[0]);
 					msPerTimeStep = 0;
-					modeParams = {
-						screenWidth: $('#canvas').width(),
-						screenHeight: $('#canvas').height(),
-					};
+
+					try {
+						var minWidth = parseInt($location.search().minWidth);
+						var minHeight = parseInt($location.search().minHeight);
+					} catch (e) {
+						console.error(e);
+					}
+
+					if (minWidth && minHeight) {
+						if ($('#canvas').width() < minWidth || $('#canvas').height() < minHeight) {
+							modeObj.setMinScreenSize(minWidth, minHeight);
+							modeParams = {
+								screenWidth: minWidth,
+								screenHeight: minHeight,
+							};
+						}
+					} else {
+						modeParams = {
+							screenWidth: $('#canvas')[0].width,
+							screenHeight: $('#canvas')[0].height,
+						};
+					}
+
 					break;
 			}
 		}
@@ -181,10 +341,18 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
 		function mouseEvent(event, e) {
 			var offset = $(e.target).offset();
-			var x = e.pageX - offset.left;
-			var y = e.pageY - offset.top;
+			var x = e.target.width * (e.pageX - offset.left) / $(e.target).width();
+			var y = e.target.height * (e.pageY - offset.top) / $(e.target).height();
 			var button = [null,"left", "middle", "right"][e.which];
-			sendEvent(event, [x, y, button]);    	
+
+			if (modeObj && modeObj.inputTranslateX) {
+				x = modeObj.inputTranslateX(x);
+			}
+			if (modeObj && modeObj.inputTranslateY) {
+				y = modeObj.inputTranslateY(y);
+			}
+
+			sendEvent(event, [Math.round(x), Math.round(y), button]);    	
 		}
 
 		$scope.canvas_mousedown = function(e) {
@@ -204,10 +372,10 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 		///////////////////////////////////////////////
 
 		function listFiles() {
-			return github.listFiles(github.user.login, "tealight-files", $scope.mode).then(function(files) {
+			return github.listFiles($routeParams.username || github.user.login, "tealight-files", $scope.mode).then(function(files) {
 
 				$scope.files = files;
-				if ($scope.mode != "robot")
+				if ($scope.mode != "robot" && !$scope.gallery)
 					$scope.files.push({name: "<New File...>", createNew: true});
 				$scope.$apply();
 
@@ -219,7 +387,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 
 		$scope.saveFile = function(message) {
 
-			if ($scope.file)
+			if ($scope.file && !$scope.gallery)
 			{
 
 				if (!message)
@@ -292,7 +460,11 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 				}
 				
 			} else {
-				$location.url("/code/" + newVal.path);
+				if ($scope.gallery) {
+					$location.url("/gallery/" + $routeParams.username + "/" + newVal.path);
+				} else {
+					$location.url("/code/" + newVal.path);
+				}
 			}
 		});
 		///////////////////////////////////////////////

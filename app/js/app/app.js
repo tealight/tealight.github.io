@@ -91,6 +91,9 @@ define(["foundation", "angular", "angular-route", "app/filters", "app/services",
 		$routeProvider.when("/code/:mode", {templateUrl: "partials/mode.html", controller: "ModeController", resolve: { user: loginResolver, repo: tealightFilesResolver }});
 		$routeProvider.when("/code/:mode/:fileName", {templateUrl: "partials/mode.html", controller: "ModeController", resolve: { user: loginResolver, repo: tealightFilesResolver }});
 
+		$routeProvider.when("/gallery", {templateUrl: "partials/gallery.html", controller: "GalleryController"});
+		$routeProvider.when("/gallery/:username/:mode/:fileName", {templateUrl: "partials/mode.html", controller: "ModeController"});
+
 		$routeProvider.when("/login", {template: "", controller: "LoginController"});
 		$routeProvider.when("/login_progress", {template: ""});
 

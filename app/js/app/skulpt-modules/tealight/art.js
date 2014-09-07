@@ -1,6 +1,14 @@
 var $builtinmodule = function(name)
 {
     var mod = {};
+
+    mod.set_min_screen_size = new Sk.builtin.func(function(width, height) {
+        Sk.builtin.pyCheckArgs("set_screen_size", arguments, 2, 2);
+        Sk.builtin.pyCheckType("width", "number", Sk.builtin.checkNumber(width));
+        Sk.builtin.pyCheckType("height", "number", Sk.builtin.checkNumber(height));
+
+        rpc("setScreenSize", 0, width.v, height.v);
+    });
 	
     mod.color = new Sk.builtin.func(function(c) {
         Sk.builtin.pyCheckArgs("color", arguments, 1, 1);
