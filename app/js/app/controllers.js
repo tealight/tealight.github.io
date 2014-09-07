@@ -781,6 +781,7 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 		})
 
 		$scope.$on("$destroy", function() {
+			$scope.stopCode();
 			$($window).off("keydown", window_keydown);
 			$($window).off("keyup", window_keyup);		
 
