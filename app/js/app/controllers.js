@@ -321,6 +321,11 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 						console.error(e);
 					}
 
+					modeParams = {
+						screenWidth: $('#canvas')[0].width,
+						screenHeight: $('#canvas')[0].height,
+					};
+
 					if (minWidth && minHeight) {
 						if ($('#canvas').width() < minWidth || $('#canvas').height() < minHeight) {
 							modeObj.setMinScreenSize(minWidth, minHeight);
@@ -329,11 +334,6 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 								screenHeight: minHeight,
 							};
 						}
-					} else {
-						modeParams = {
-							screenWidth: $('#canvas')[0].width,
-							screenHeight: $('#canvas')[0].height,
-						};
 					}
 
 					break;
