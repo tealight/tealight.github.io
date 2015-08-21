@@ -181,8 +181,53 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 		}, {
 			title: "Sutton Trust Summer School 2015",
 			featured: [{
-				title: "Connect 4",
+				title: "Minesweeper",
 				subtitle: "Group 1",
+				user: "callum9977",
+				path: "art/Sweepinggrid.py",
+				authors: [{
+					name: "Callum Onsenaobiya",
+					username: "callum9977",
+				}, {
+					name: "Leo Williams",
+					username: "Fourthdwarflord",
+				}, {
+					name: "Nathan Sealey",
+					username: "NaytS",
+				}],
+			},{
+				title: "Minesweeper",
+				subtitle: "Group 2",
+				user: "jackm110",
+				path: "art/Project.py",
+				authors: [{
+					name: "Jack Marshall",
+					username: "jackm110",
+				}, {
+					name: "Abolaji Kalejaige",
+					username: "Orthoc",
+				}, {
+					name: "Prince Kastrati",
+					username: "princz",
+				}],
+			},{
+				title: "Paint",
+				subtitle: "Group 3",
+				user: "tsalam98",
+				path: "art/Mpaint.py",
+				authors: [{
+					name: "Tabia Salam",
+					username: "tsalam98",
+				}, {
+					name: "Alexinder Riyat",
+					username: "alexinder",
+				}, {
+					name: "Benula Benny",
+					username: "bbenny0211",
+				}],
+			},{
+				title: "Connect 4",
+				subtitle: "Group 4",
 				user: "Rhino5651",
 				path: "art/Connect4.py",
 				minWidth: 1000,
@@ -198,116 +243,80 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 					username: "TheAIAJ",
 				}],
 			},{
-				title: "Racetrack 3000",
-				subtitle: "Group 2",
-				user: "harveyives",
-				path: "art/main.py",
-				minWidth: 1000,
-				minHeight: 1000,
+				title: "Mineswepper [sic!]",
+				subtitle: "Group 5",
+				user: "a-j-bolton",
+				path: "art/Mineswepper.py",
 				authors: [{
-					name: "?",
-					username: "?",
+					name: "Alex Bolton",
+					username: "a-j-Bolton",
 				}, {
-					name: "?",
-					username: "?",
+					name: "Aimee Hannaford",
+					username: "AimeeH",
 				}, {
-					name: "?",
-					username: "?",
+					name: "Liam Fleet",
+					username: "Fleetabix",
+				}],
+			},{
+				title: "Pictionary",
+				subtitle: "Group 6",
+				user: "willg-c",
+				path: "art/pictionary.py",
+				authors: [{
+					name: "Will Guerin-Ciccone",
+					username: "willg-c",
+				}, {
+					name: "Jawad Adnan",
+					username: "darkchaoticlord",
+				}, {
+					name: "Bridget Le",
+					username: "amyble",
 				}],
 			},{
 				title: "Racetrack",
-				subtitle: "Group 3",
-				user: "rexapex",
-				path: "art/prj_racetrack.py",
-				authors: [{
-					name: "?",
-					username: "?",
-				}, {
-					name: "?",
-					username: "?",
-				}],
-			},{
-				title: "Racetrack",
-				subtitle: "Group 4",
+				subtitle: "Group 7",
 				user: "Sagelin",
 				path: "art/untitled2.py",
 				minWidth: 1000,
 				minHeight: 1200,
 				authors: [{
-					name: "?",
-					username: "?",
+					name: "Charlie Linacre",
+					username: "sagelin",
 				}, {
-					name: "?",
-					username: "?",
+					name: "Toma Popov",
+					username: "iTomaanHD",
 				}, {
-					name: "?",
-					username: "?",
+					name: "Martin Humphries",
+					username: "Minghsien",
 				}],
 			},{
-				title: "Minesweeper",
-				subtitle: "Group 5",
-				user: "jackm110",
-				path: "art/Project.py",
+				title: "Racetrack 3000",
+				subtitle: "Group 8",
+				user: "harveyives",
+				path: "art/main.py",
+				minWidth: 1000,
+				minHeight: 1000,
 				authors: [{
-					name: "?",
-					username: "?",
+					name: "Harvey Ives",
+					username: "harveyives",
 				}, {
-					name: "?",
-					username: "?",
+					name: "James Lowenthal",
+					username: "09lowenthalj413",
 				}, {
-					name: "?",
-					username: "?",
+					name: "Danial Haddadi",
+					username: "dhs11",
 				}],
 			},{
-				title: "Mineswepper [sic]",
-				subtitle: "Group 6",
-				user: "a-j-bolton",
-				path: "art/Mineswepper.py",
+				title: "Racetrack",
+				subtitle: "Group 9",
+				user: "rexapex",
+				path: "art/prj_racetrack.py",
 				authors: [{
-					name: "?",
-					username: "?",
+					name: "James Sugden",
+					username: "rexapex",
 				}, {
-					name: "?",
-					username: "?",
-				}, {
-					name: "?",
-					username: "?",
-				}],
-			},{
-				title: "Minesweeper",
-				subtitle: "Group 7",
-				user: "callum9977",
-				path: "art/Sweepinggrid.py",
-				authors: [{
-					name: "?",
-					username: "?",
-				}, {
-					name: "?",
-					username: "?",
-				}],
-			},{
-				title: "Pictionary",
-				subtitle: "Group 7",
-				user: "willg-c",
-				path: "art/pictionary.py",
-				authors: [{
-					name: "?",
-					username: "?",
-				}, {
-					name: "?",
-					username: "?",
-				}],
-			},{
-				title: "Paint",
-				subtitle: "Group 7",
-				user: "tsalam98",
-				path: "art/Mpaint.py",
-				authors: [{
-					name: "?",
-					username: "?",
-				}, {
-					name: "?",
-					username: "?",
+					name: "Luke Harrison",
+					username: "Krimzur",
 				}],
 			}],
 		}];
