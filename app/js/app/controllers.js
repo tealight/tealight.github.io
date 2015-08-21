@@ -47,138 +47,6 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 				}]
 			}]
 		}, {
-			title: "Sutton Trust Summer School 2014",
-			featured: [{
-				title: "Connect 4",
-				subtitle: "Group 1",
-				user: "chandler6",
-				path: "art/connectfourmain.py",
-				minWidth: 900,
-				minHeight: 900,
-				authors: [{
-					name: "Chandler Goddard",
-					username: "chandler6",
-				}, {
-					name: "Chloe Ayoub",
-					username: "chloea",
-				}, {
-					name: "Maurice Yap",
-					username: "mauriceyap",
-				}, {
-					name: "Sohraab Sayed",
-					username: "v3506",
-				}],
-			},{
-				title: "Memory Game",
-				subtitle: "Group 2",
-				user: "shivam1023",
-				path: "art/MemoryGame.py",
-				minWidth: 850,
-				minHeight: 1000,
-				authors: [{
-					name: "Shivam Shah",
-					username: "shivam1023",
-				}, {
-					name: "Feras Al-Hamadani",
-					username: "feras96",
-				}, {
-					name: "Jordan Clark",
-					username: "jordanc44",
-				}, {
-					name: "Saxon Zerbino",
-					username: "lordofsax",
-				}],
-			},{
-				title: "Connect 4",
-				subtitle: "Group 3",
-				user: "griffithsben",
-				path: "art/Connect4Main.py",
-				minWidth: 900,
-				minHeight: 900,
-				authors: [{
-					name: "Ben Griffiths",
-					username: "griffithsben",
-				}, {
-					name: "Andrew Wells",
-					username: "andyandywells",
-				}, {
-					name: "Basil Regi",
-					username: "basregi",
-				}, {
-					name: "Nicholas McAlpin",
-					username: "nickmcalpin",
-				}],
-			},{
-				title: "dinOTHELLOsaurus",
-				subtitle: "Group 4",
-				user: "anthonyajsmith",
-				path: "art/othello.py",
-				minWidth: 1200,
-				minHeight: 850,
-				authors: [{
-					name: "Anthony Smith",
-					username: "anthonyajsmith",
-				}, {
-					name: "Ahartisha Selakanabarajah",
-					username: "arty001",
-				}, {
-					name: "Louise Truong",
-					username: "louisahoa",
-				}, {
-					name: "Ronan Kelly",
-					username: "ronanmtkelly",
-				}],
-			},{
-				title: "Minesweeper",
-				subtitle: "Group 5",
-				user: "davidsamueljones",
-				path: "art/Minesweeper.py",
-				minWidth: 600,
-				minHeight: 1000,
-				authors: [{
-					name: "David Jones",
-					username: "davidsamueljones",
-				}, {
-					name: "Christopher Davies",
-					username: "v3520",
-				}, {
-					name: "Elizabeth Tebbutt",
-					username: "lizztebbutt",
-				}, {
-					name: "Emrecan Kayran",
-					username: "emrecan-k",
-				}],
-			},{
-				title: "Racetrack",
-				subtitle: "Group 6",
-				user: "a-l-williams",
-				path: "art/project.py",
-				minWidth: 1000,
-				minHeight: 1000,
-				authors: [{
-					name: "Adam Williams",
-					username: "a-l-williams",
-				}, {
-					name: "Matthew Brooks",
-					username: "lordvile018",
-				}, {
-					name: "Calin Tataru",
-					username: "calintat",
-				}],
-			},{
-				title: "Racetrack",
-				subtitle: "Group 7",
-				user: "v3491",
-				path: "art/racetrack.py",
-				authors: [{
-					name: "George Andersen",
-					username: "v3491",
-				}, {
-					name: "Callum Ryan",
-					username: "c-ryan747",
-				}],
-			}],
-		}, {
 			title: "Sutton Trust Summer School 2015",
 			featured: [{
 				title: "Minesweeper",
@@ -317,6 +185,138 @@ define(["require", "angular", "github", "app/modes/logo", "app/modes/robot", "ap
 				}, {
 					name: "Luke Harrison",
 					username: "Krimzur",
+				}],
+			}],
+		}, {
+			title: "Sutton Trust Summer School 2014",
+			featured: [{
+				title: "Connect 4",
+				subtitle: "Group 1",
+				user: "chandler6",
+				path: "art/connectfourmain.py",
+				minWidth: 900,
+				minHeight: 900,
+				authors: [{
+					name: "Chandler Goddard",
+					username: "chandler6",
+				}, {
+					name: "Chloe Ayoub",
+					username: "chloea",
+				}, {
+					name: "Maurice Yap",
+					username: "mauriceyap",
+				}, {
+					name: "Sohraab Sayed",
+					username: "v3506",
+				}],
+			},{
+				title: "Memory Game",
+				subtitle: "Group 2",
+				user: "shivam1023",
+				path: "art/MemoryGame.py",
+				minWidth: 850,
+				minHeight: 1000,
+				authors: [{
+					name: "Shivam Shah",
+					username: "shivam1023",
+				}, {
+					name: "Feras Al-Hamadani",
+					username: "feras96",
+				}, {
+					name: "Jordan Clark",
+					username: "jordanc44",
+				}, {
+					name: "Saxon Zerbino",
+					username: "lordofsax",
+				}],
+			},{
+				title: "Connect 4",
+				subtitle: "Group 3",
+				user: "griffithsben",
+				path: "art/Connect4Main.py",
+				minWidth: 900,
+				minHeight: 900,
+				authors: [{
+					name: "Ben Griffiths",
+					username: "griffithsben",
+				}, {
+					name: "Andrew Wells",
+					username: "andyandywells",
+				}, {
+					name: "Basil Regi",
+					username: "basregi",
+				}, {
+					name: "Nicholas McAlpin",
+					username: "nickmcalpin",
+				}],
+			},{
+				title: "dinOTHELLOsaurus",
+				subtitle: "Group 4",
+				user: "anthonyajsmith",
+				path: "art/othello.py",
+				minWidth: 1200,
+				minHeight: 850,
+				authors: [{
+					name: "Anthony Smith",
+					username: "anthonyajsmith",
+				}, {
+					name: "Ahartisha Selakanabarajah",
+					username: "arty001",
+				}, {
+					name: "Louise Truong",
+					username: "louisahoa",
+				}, {
+					name: "Ronan Kelly",
+					username: "ronanmtkelly",
+				}],
+			},{
+				title: "Minesweeper",
+				subtitle: "Group 5",
+				user: "davidsamueljones",
+				path: "art/Minesweeper.py",
+				minWidth: 600,
+				minHeight: 1000,
+				authors: [{
+					name: "David Jones",
+					username: "davidsamueljones",
+				}, {
+					name: "Christopher Davies",
+					username: "v3520",
+				}, {
+					name: "Elizabeth Tebbutt",
+					username: "lizztebbutt",
+				}, {
+					name: "Emrecan Kayran",
+					username: "emrecan-k",
+				}],
+			},{
+				title: "Racetrack",
+				subtitle: "Group 6",
+				user: "a-l-williams",
+				path: "art/project.py",
+				minWidth: 1000,
+				minHeight: 1000,
+				authors: [{
+					name: "Adam Williams",
+					username: "a-l-williams",
+				}, {
+					name: "Matthew Brooks",
+					username: "lordvile018",
+				}, {
+					name: "Calin Tataru",
+					username: "calintat",
+				}],
+			},{
+				title: "Racetrack",
+				subtitle: "Group 7",
+				user: "v3491",
+				path: "art/racetrack.py",
+				authors: [{
+					name: "George Andersen",
+					username: "v3491",
+				}, {
+					name: "Callum Ryan",
+					username: "c-ryan747",
 				}],
 			}],
 		}];
